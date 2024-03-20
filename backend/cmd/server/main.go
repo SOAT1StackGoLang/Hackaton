@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/SOAT1StackGoLang/Hackaton/internal/transport"
+	"github.com/SOAT1StackGoLang/Hackaton/internal/transport/routes"
+	logger "github.com/SOAT1StackGoLang/Hackaton/pkg/middleware"
 	"github.com/gorilla/mux"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -21,6 +23,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+	r = routes.NewHelloRoutes(r, logger.InfoLogger)
 
 	transport.NewHTTPServer(":8080", muxToHttp(r))
 
