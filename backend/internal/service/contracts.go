@@ -13,6 +13,6 @@ type TimekeepingService interface {
 
 type ReportsService interface {
 	GetTimekeepingFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error)
-	GetDailyReport(ctx context.Context, userID uuid.UUID, date time.Time) (Timekeeping, error)
-	GetMonthlyReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Timekeeping, error)
+	//GetDailyReport(ctx context.Context, userID uuid.UUID, date time.Time) (Timekeeping, error)
+	GetMonthlyReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error)
 }
