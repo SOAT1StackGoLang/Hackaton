@@ -30,7 +30,7 @@ RUN swag init -g helpers.go -o ./docs/ -d ./internal/transport/routes -ot go
 RUN go build -o /go/bin/app -v cmd/server/*.go
 
 # Build the migrations
-RUN go build -o /go/bin/migs -v cmd/migrations/*.go
+RUN go build -o /go/bin/migrations -v cmd/migrations/*.go
 
 # final stage
 FROM alpine:latest
