@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/SOAT1StackGoLang/Hackaton/pkg/helpers"
 	logger "github.com/SOAT1StackGoLang/Hackaton/pkg/middleware"
+	"github.com/joho/godotenv"
 	"os"
 )
 
@@ -21,18 +22,16 @@ var (
 func initializeApp() {
 	flag.StringVar(&binding, "httpbind", ":8000", "address/port to bind listen socket")
 	flag.Parse()
-	//err := godotenv.Load()
-	//if err != nil {
-	//	logger.InfoLogger.Log("load err", err.Error())
-	//}
+	err := godotenv.Load()
+	if err != nil {
+		logger.InfoLogger.Log("load err", err.Error())
+	}
 	helpers.ReadPgxConnEnvs()
 	paymentURI = os.Getenv("PAYMENT_URI")
 	productionURI = os.Getenv("PRODUCTION_URI")
 	connString = helpers.GetConnectionParams()
 
 	logger.InitializeLogger()
-
-	logger.Info("Connecting to datastore...")
 
 	return
 }
