@@ -14,7 +14,12 @@ type rS struct {
 	persistence persistence.TimekeepingRepository
 }
 
-func (r rS) GetMonthlyReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Timekeeping, error) {
+func (r *rS) GetDailyFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r *rS) GetMonthlyReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error) {
 	//TODO implement me
 	panic("implement me")
 }
