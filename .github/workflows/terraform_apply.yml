@@ -28,16 +28,8 @@ on:
         description: 'Terraform State Key'
         required: false
         default: 'terraform.tfstate'
-      msvc_orders_image_tag:
-        description: 'The tag of the image for the orders microservice without msvc'
-        required: false
-        default: 'develop'
-      msvc_payments_image_tag:
-        description: 'The tag of the image for the payments microservice without msvc'
-        required: false
-        default: 'develop'
-      msvc_production_image_tag:
-        description: 'The tag of the image for the products microservice without msvc'
+      svc_hackaton_image_tag:
+        description: 'The tag of the image for the hackaton service without svc'
         required: false
         default: 'develop'
       
@@ -73,7 +65,5 @@ jobs:
       env:
         TF_VAR_environment: ${{ github.event.inputs.DEPLOY_ENVIRONMENT }}
         TF_VAR_image_registry: "ghcr.io/soat1stackgolang"
-        TF_VAR_msvc_orders_image_tag: "msvc-${{ github.event.inputs.msvc_orders_image_tag }}" # The tag of the image for the orders microservice without msvc
-        TF_VAR_msvc_orders_migs_image_tag: "migs-${{ github.event.inputs.msvc_orders_image_tag }}" # The tag of the image for the orders microservice with msvc
-        TF_VAR_msvc_payments_image_tag: "msvc-${{ github.event.inputs.msvc_payments_image_tag }}" # The tag of the image for the payments microservice without msvc
-        TF_VAR_msvc_production_image_tag: "msvc-${{ github.event.inputs.msvc_production_image_tag }}" # The tag of the image for the products microservice without msvc
+        TF_VAR_svc_hackaton_image_tag: "svc-${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service without svc
+        TF_VAR_svc_hackaton_migs_image_tag: "migs-${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service with svc
