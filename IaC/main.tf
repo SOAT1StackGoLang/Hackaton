@@ -24,22 +24,6 @@ module "rds" {
 }
 
 
-# Elasticache
-module "elasticache" {
-  source               = "./modules/elasticache"
-  replication_group_id = "${var.project_name}-redis-cluster"
-  redis_port           = var.redis_port
-  project_name         = var.project_name
-  region               = var.region
-  availability_zones   = var.availability_zones
-  vpc_id               = module.vpc_for_eks.vpc_id
-  vpc_cidr_block       = var.vpc_cidr_block
-  database_subnetids   = module.vpc_for_eks.private_subnet_ids
-
-  depends_on = [module.vpc_for_eks]
-}
-
-
 # EKS Cluster
 module "eks_cluster" {
   source = "./modules/eks"
@@ -82,12 +66,9 @@ module "app" {
   database_port     = var.database_credentials.port
   database_name     = var.database_credentials.name
 
-  redis_host = module.elasticache.primary_endpoint_address
-  redis_port = var.redis_port
-
   redeploy_annotation = var.redeploy_annotation
 
-  depends_on = [module.eks_cluster, module.rds, module.elasticache]
+  depends_on = [module.eks_cluster, module.rds]
 }
 
 

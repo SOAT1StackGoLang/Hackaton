@@ -75,16 +75,3 @@ output "cognito_client_id" {
 output "apigw_endpoint" {
   value = module.authorizer.apigw_endpoint
 }
-
-
-#--------------------------------------------------------------------------
-# From Module Elasticache
-#--------------------------------------------------------------------------
-
-output "primary_endpoint_address" {
-  value = module.elasticache.primary_endpoint_address
-}
-
-output "reader_endpoint_address" {
-  value = module.elasticache.reader_endpoint_address
-}

@@ -6,7 +6,7 @@
 ############################################################################################
 apigw_endpoint="https://704qemtrt4.execute-api.us-east-1.amazonaws.com"
 cognito_client_id="6rvfop6n2r63u46kjc3n5mvc6b"
-cognito_url="https://techchallenge-dev.auth.us-east-1.amazoncognito.com"
+cognito_url="https://hackaton-dev.auth.us-east-1.amazoncognito.com"
 cognito_userpool_id="us-east-1_aQoj4mSdM"
 
 

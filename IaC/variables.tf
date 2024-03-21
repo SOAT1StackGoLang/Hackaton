@@ -19,7 +19,7 @@ variable "vpc_cidr_block" {
 
 variable "project_name" {
   type    = string
-  default = "techchallenge"
+  default = "hackaton"
 }
 
 variable "database_credentials" {
@@ -39,13 +39,6 @@ variable "database_credentials" {
     name     = "lanchonete"
   }
 }
-
-variable "redis_port" {
-  description = "ElastiCache port."
-  type        = number
-  default     = 6379
-}
-
 
 variable "cognito_test_user" {
   description = "Credentials of Cognito user to be used in validation"

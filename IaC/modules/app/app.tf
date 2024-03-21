@@ -22,7 +22,6 @@ locals {
 
   svc_hackaton_svc     = "svc-hackaton-svc"
 
-  kvstore_uri         = "${var.redis_host}:${var.redis_port}"
   svc_hackaton_uri     = "http://${local.svc_hackaton_svc}.${local.namespace}.svc.cluster.local:${local.svc_hackaton_port}"
 
   kvstore_db_svc_hackaton     = 10

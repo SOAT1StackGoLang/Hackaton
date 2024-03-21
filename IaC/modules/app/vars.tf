@@ -28,16 +28,6 @@ variable "database_name" {
   type    = string
 }
 
-variable "redis_port" {
-  description = "port used by Redis database"
-  type        = number
-}
-
-variable "redis_host" {
-  default = "Redis database host's address"
-  type    = string
-}
-
 variable "image_registry" {
   description = "The registry where the image is stored"
   type        = string

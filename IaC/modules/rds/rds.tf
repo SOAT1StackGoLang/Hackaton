@@ -27,7 +27,7 @@ resource "aws_db_parameter_group" "postgres15_parameter_group" {
 }
 
 resource "aws_db_instance" "rds" {
-  identifier                 = "techchallenge-rds-15"
+  identifier                 = "hackaton-rds-15"
   db_name                    = var.database_name
   instance_class             = "db.t4g.micro"
   allocated_storage          = 20
