@@ -39,7 +39,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
           docker pull ghcr.io/soat1stackgolang/hackaton:migs-${{ env.SHORT_SHA }}
-          docker pull ghcr.io/soat1stackgolang/hackaton:main-${{ env.SHORT_SHA }}
+          docker pull ghcr.io/soat1stackgolang/hackaton:svc-${{ env.SHORT_SHA }}
 
       - name: Run Trivy vulnerability scanner Mig App
         uses: aquasecurity/trivy-action@master
@@ -55,7 +55,7 @@ jobs:
       - name: Run Trivy vulnerability scanner Main App
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/soat1stackgolang/hackaton:main-${{ env.SHORT_SHA }}'
+          image-ref: 'ghcr.io/soat1stackgolang/hackaton:svc-${{ env.SHORT_SHA }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -92,7 +92,7 @@ jobs:
       - name: Run Trivy vulnerability scanner Main App in sarif mode
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/soat1stackgolang/hackaton:main-${{ env.SHORT_SHA }}'
+          image-ref: 'ghcr.io/soat1stackgolang/hackaton:svc-${{ env.SHORT_SHA }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
