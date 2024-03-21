@@ -20,8 +20,17 @@
 # Go workspace file
 go.work
 
+
+# Terraform
+.terraform/
+IaC/.terraform/
+IaC/.terraform.tfstate
+IaC/.terraform*
+IaC/.terraform.lock.hcl
+
 # Jetbrains IDE files
 .idea
 
 # Project Files
 .env
+

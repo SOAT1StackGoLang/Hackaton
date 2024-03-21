@@ -16,10 +16,10 @@ ALTER SYSTEM SET track_activity_query_size = 2048;
 -- Get configs
 SELECT name, setting, source FROM pg_settings WHERE source != 'default';
 
--- Create users for hackaton-orders, hackaton-production, hackaton-payments and password for each user for testing
+-- Create users for hackaton
 CREATE USER hackaton WITH PASSWORD 'hackaton';
 
--- Create databases and give permission for hackaton-orders(this will be the schema migrator must be admin), hackaton-production, hackaton-payments
+-- Create databases and give permission for hackaton
 CREATE DATABASE hackaton;
 -- Grant admin permission to the database on hackaton and public schema
 GRANT ALL PRIVILEGES ON DATABASE hackaton TO hackaton;
