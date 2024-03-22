@@ -11,20 +11,24 @@ import (
 
 type rS struct {
 	log         kitlog.Logger
-	persistence persistence.TimekeepingRepository
+	persistence persistence.EntryRepository
 }
 
-func (r *rS) GetDailyFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error) {
+func (r *rS) GetDailyReportFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error) {
+	_, err := r.persistence.ListEntriesByRangeAndUserID(ctx, userID, date, date)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, err
+}
+
+func (r *rS) GetMonthlyFromDateReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r *rS) GetMonthlyReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func NewReportsService(persistence persistence.TimekeepingRepository, log kitlog.Logger) ReportsService {
+func NewReportsService(persistence persistence.EntryRepository, log kitlog.Logger) ReportsService {
 	return &rS{
 		log:         log,
 		persistence: persistence,
