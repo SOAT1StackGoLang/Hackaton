@@ -2,37 +2,35 @@ package endpoints
 
 import (
 	"context"
+	"errors"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service"
-	"github.com/SOAT1StackGoLang/Hackaton/internal/service/models"
 	"github.com/go-kit/kit/endpoint"
-	"github.com/google/uuid"
 	"time"
 )
 
 type (
 	EntriesEndpoint struct {
-		CreateEntryEndpoint endpoint.Endpoint
+		InsertTimekeepingEndpoint endpoint.Endpoint
 	}
 )
 
-func MakeEntriesEndpoint(svc service.EntriesService) EntriesEndpoint {
+func MakeTimekeepingEndpoint(svc service.TimekeepingService) EntriesEndpoint {
 	return EntriesEndpoint{
-		CreateEntryEndpoint: makeCreateEntryEndpoint(svc),
+		InsertTimekeepingEndpoint: makeCreateEntryEndpoint(svc),
 	}
 
 }
 
-func makeCreateEntryEndpoint(svc service.EntriesService) endpoint.Endpoint {
+func makeCreateEntryEndpoint(svc service.TimekeepingService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		var (
 			entryAt time.Time
 		)
 
-		req := request.(InsertEntryRequest)
+		req := request.(InsertTimekeepingEntryRequest)
 
-		uID, err := uuid.Parse(req.UserID)
-		if err != nil {
-			return nil, err
+		if req.UserID == "" {
+			return nil, errors.New("missing user id")
 		}
 
 		if req.EntryAt == "" {
@@ -44,22 +42,11 @@ func makeCreateEntryEndpoint(svc service.EntriesService) endpoint.Endpoint {
 			}
 		}
 
-		in := &models.Entry{
-			UserID:    uID,
-			CreatedAt: entryAt,
-		}
-
-		eOut, err := svc.CreateEntry(ctx, in)
+		resp, err := svc.InsertEntry(ctx, req.UserID, entryAt)
 		if err != nil {
 			return nil, err
 		}
-
-		out := InsertEntryResponse{
-			ID:      eOut.ID.String(),
-			UserID:  eOut.UserID.String(),
-			EntryAt: eOut.CreatedAt.Format(time.RFC3339),
-		}
-
-		return out, nil
+		
+		return timeKeepingResponseFromModels(resp), nil
 	}
 }

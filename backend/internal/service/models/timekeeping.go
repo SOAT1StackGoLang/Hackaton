@@ -4,30 +4,47 @@ import "time"
 import "github.com/google/uuid"
 
 type (
-	Entry struct {
-		ID        uuid.UUID
-		UserID    uuid.UUID
-		CreatedAt time.Time
-	}
-
-	Period struct {
-		RegistryID uuid.UUID
-		EntryTime  time.Time
-		ExitTime   time.Time
-		TotalTime  time.Duration
-	}
-
 	DailyReport struct {
-		UserID     uuid.UUID
+		UserID     string
 		ReportDate time.Time
 		TotalTime  time.Duration
 		Registries []Entry
 	}
 
 	Report struct {
-		UserID          uuid.UUID
+		UserID          string
 		ReportDate      time.Time
 		TotalTime       time.Duration
 		DetailedEntries []Entry
+	}
+
+	RangedTimekeepingReport struct {
+		UserID        string
+		Start         time.Time
+		End           time.Time
+		WorkedMinutes int64
+		Open          bool
+		Details       []Timekeeping
+	}
+
+	Timekeeping struct {
+		ID            uuid.UUID
+		UserID        string
+		CreatedAt     time.Time
+		UpdatedAt     time.Time
+		WorkedMinutes int64
+		Open          bool
+		Details       []Period
+	}
+
+	Period struct {
+		WorkedMinutes int64
+		StartingEntry Entry
+		EndingEntry   Entry
+	}
+
+	Entry struct {
+		ID        uuid.UUID
+		CreatedAt time.Time
 	}
 )

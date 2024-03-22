@@ -12,17 +12,17 @@ import (
 	"net/http"
 )
 
-func NewEntriesRoutes(r *mux.Router, svc service.EntriesService, logger kitlog.Logger) *mux.Router {
-	entries := endpoints.MakeEntriesEndpoint(svc)
+func NewEntriesRoutes(r *mux.Router, svc service.TimekeepingService, logger kitlog.Logger) *mux.Router {
+	entries := endpoints.MakeTimekeepingEndpoint(svc)
 
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorHandler(kittransport.NewLogErrorHandler(logger)),
 		httptransport.ServerErrorEncoder(encodeError),
 	}
 
-	r.Methods(http.MethodPost).Path("/entries").Handler(httptransport.NewServer(
-		entries.CreateEntryEndpoint,
-		decodeCreateEntryRequest,
+	r.Methods(http.MethodPost).Path("/api/clock-in").Handler(httptransport.NewServer(
+		entries.InsertTimekeepingEndpoint,
+		decodeInsertEntryRequest,
 		encodeResponse,
 		options...,
 	))
@@ -31,9 +31,9 @@ func NewEntriesRoutes(r *mux.Router, svc service.EntriesService, logger kitlog.L
 
 }
 
-func decodeCreateEntryRequest(_ context.Context, r *http.Request) (interface{}, error) {
+func decodeInsertEntryRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	// TODO extract userID
-	var request endpoints.InsertEntryRequest
+	var request endpoints.InsertTimekeepingEntryRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
