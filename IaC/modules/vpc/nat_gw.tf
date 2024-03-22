@@ -3,6 +3,7 @@ resource "aws_eip" "main" {
   domain = "vpc"
 }
 
+
 # Create NAT Gateway
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.main.id
@@ -12,13 +13,6 @@ resource "aws_nat_gateway" "main" {
     Name = "NAT Gateway for Custom Kubernetes Cluster"
   }
 }
-
-## Add route to route table
-#resource "aws_route" "private" {
-#  route_table_id            = aws_vpc.custom_vpc.default_route_table_id
-#  destination_cidr_block    = "0.0.0.0/0"
-#  nat_gateway_id = aws_nat_gateway.main.id
-#}
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.custom_vpc.id
