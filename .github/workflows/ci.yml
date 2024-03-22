@@ -3,6 +3,8 @@ name: Build and Push
 on:
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - 'backend/**'
   workflow_dispatch:
 
 jobs:
