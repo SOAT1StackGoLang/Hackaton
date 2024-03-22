@@ -14,7 +14,7 @@ services:
       - 8080:8080
     environment:
       # Database connection URI # check the initidb folder for more db information
-      DB_URI: postgres://postgres:postgres@services_db_1:5432/hackaton?sslmode=disable
+      DB_URI: postgres://postgres:postgres@backend_db_1:5432/hackaton?sslmode=disable
     # Specifies the services that this service depends on.
     depends_on:
       - db

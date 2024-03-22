@@ -34,3 +34,4 @@ IaC/.terraform.lock.hcl
 # Project Files
 .env
 
+.vscode/launch.json
