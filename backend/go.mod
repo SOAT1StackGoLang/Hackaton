@@ -1,6 +1,6 @@
 module github.com/SOAT1StackGoLang/Hackaton
 
-go 1.21.6
+go 1.21
 
 require (
 	github.com/Boostport/migration v1.1.2
