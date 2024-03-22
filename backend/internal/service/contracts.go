@@ -7,12 +7,11 @@ import (
 	"time"
 )
 
-type TimekeepingService interface {
-	InsertEntry(ctx context.Context, in *models.Entry) (*models.Entry, error)
+type EntriesService interface {
+	CreateEntry(ctx context.Context, in *models.Entry) (*models.Entry, error)
 }
 
 type ReportsService interface {
-	GetDailyFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error)
-	//GetDailyReport(ctx context.Context, userID uuid.UUID, date time.Time) (Timekeeping, error)
-	GetMonthlyReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error)
+	GetDailyReportFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error)
+	GetMonthlyFromDateReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error)
 }

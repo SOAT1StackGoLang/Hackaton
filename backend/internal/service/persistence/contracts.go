@@ -1,10 +1,15 @@
 package persistence
 
-import "context"
+import (
+	"context"
+	"github.com/SOAT1StackGoLang/Hackaton/internal/service/models"
+	"github.com/google/uuid"
+	"time"
+)
 
-type TimekeepingRepository interface {
+type EntryRepository interface {
 	// CreateTimekeeping creates a new timekeeping record
-	CreateTimekeeping(ctx context.Context, userID string) error
+	InsertEntry(ctx context.Context, userID uuid.UUID, entryAt time.Time) (*models.Entry, error)
 	// GetTimekeepingFromDate returns a timekeeping record for a given date
-	ListTimekeepingFromDateAndUserID(ctx context.Context, userID string, date string) error
+	ListEntriesByRangeAndUserID(ctx context.Context, userID uuid.UUID, start, end time.Time) ([]*models.Entry, error)
 }

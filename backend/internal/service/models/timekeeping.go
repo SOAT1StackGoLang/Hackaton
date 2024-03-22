@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 
 type (
 	Entry struct {
-		ID        int
+		ID        uuid.UUID
 		UserID    uuid.UUID
 		CreatedAt time.Time
 	}

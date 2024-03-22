@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/SOAT1StackGoLang/Hackaton/internal/service"
+	"github.com/SOAT1StackGoLang/Hackaton/internal/service/persistence"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/transport"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/transport/routes"
 	logger "github.com/SOAT1StackGoLang/Hackaton/pkg/middleware"
@@ -15,7 +17,7 @@ import (
 func main() {
 	initializeApp()
 
-	_, err := gorm.Open(postgres.Open(connString), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(connString), &gorm.Config{
 		SkipDefaultTransaction: true,
 	})
 	if err != nil {
@@ -23,7 +25,13 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+
 	r = routes.NewHelloRoutes(r, logger.InfoLogger)
+
+	entriesRepo := persistence.NewEntriesPersistence(db, logger.InfoLogger)
+	entriesSvc := service.NewEntriesService(entriesRepo)
+
+	r = routes.NewEntriesRoutes(r, entriesSvc, logger.InfoLogger)
 
 	transport.NewHTTPServer(":8080", muxToHttp(r))
 
