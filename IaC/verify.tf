@@ -17,8 +17,8 @@ resource "null_resource" "Verification" {
       #echo  "\n-------------------------------TOKEN------------------------------------------" >> /tmp/verification.txt
       #echo "$token" >> /tmp/verification.txt
 
-      test_endpoint="${module.authorizer.apigw_endpoint}/category/9764bd96-3bcf-11ee-be56-0242ac120002"
-      #test_endpoint="${module.authorizer.apigw_endpoint}/category/all"
+      #test_endpoint="${module.authorizer.apigw_endpoint}/category/9764bd96-3bcf-11ee-be56-0242ac120002"
+      test_endpoint="${module.authorizer.apigw_endpoint}/hello"
 
       echo  "\n-------------------------TEST WITHOUT TOKEN------------------------------------"  >> /tmp/verification.txt
 
