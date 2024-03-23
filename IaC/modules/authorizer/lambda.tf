@@ -18,15 +18,15 @@ resource "aws_lambda_permission" "apigw" {
 }
 
 # Download ZIP file that will be used to create lambda
-resource "null_resource" "download_file" {
-  provisioner "local-exec" {
-    command = "curl -s -L https://github.com/SOAT1StackGoLang/Hackaton/blob/develop/IaC/modules/authorizer/bundle.zip -o ${path.module}/bundle.zip"
-  }
-  # always run
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-}
+#resource "null_resource" "download_file" {
+#  provisioner "local-exec" {
+#    command = "curl -s -L https://github.com/SOAT1StackGoLang/Hackaton/blob/develop/IaC/modules/authorizer/bundle.zip -o ${path.module}/bundle.zip"
+#  }
+#  # always run
+#  triggers = {
+#    always_run = "${timestamp()}"
+#  }
+#}
 
 
 # Create Lambda function
@@ -45,8 +45,8 @@ resource "aws_lambda_function" "authorizer_lambda" {
     }
   }
   depends_on = [aws_cognito_user_pool_client.cognito_appclient,
-    aws_cognito_user_pool.user_pool,
-    null_resource.download_file
+    aws_cognito_user_pool.user_pool
+    #null_resource.download_file
   ]
 
 }
