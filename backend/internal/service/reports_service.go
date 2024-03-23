@@ -23,8 +23,34 @@ func (r rS) GetReportByReferenceDateAndUserID(ctx context.Context, userID string
 }
 
 func (r rS) GetReportByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) (*models.RangedTimekeepingReport, error) {
-	//TODO implement me
-	panic("implement me")
+	var (
+		out = &models.RangedTimekeepingReport{
+			UserID:        userID,
+			Start:         start,
+			End:           end,
+			WorkedMinutes: 0,
+			Open:          false,
+		}
+
+		details = make([]models.Timekeeping, 0)
+	)
+
+	regs, err := r.tR.ListTimekeepingByRangeAndUserID(ctx, userID, start, end)
+	if err != nil {
+		logger.Error(fmt.Sprintf("%s: %s", "failed getting timekeeping", err.Error()))
+		return nil, err
+	}
+
+	for _, reg := range regs {
+		if reg.Open {
+			out.Open = true
+		}
+		details = append(details, *reg)
+		out.WorkedMinutes += reg.WorkedMinutes
+	}
+	out.Details = details
+
+	return out, nil
 }
 
 func NewReportService(tR persistence.TimekeepingRepository) ReportService {

@@ -71,6 +71,32 @@ func (tP *tP) CreateTimekeeping(ctx context.Context, in *models.Timekeeping) err
 }
 
 func (tP *tP) ListTimekeepingByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) ([]*models.Timekeeping, error) {
+	var (
+		out         []*models.Timekeeping
+		regs        []*Timekeeping
+		location, _ = time.LoadLocation("America/Sao_Paulo") // Fuso horário de Brasília
+
+	)
+
+	begginningOfDay := start.Truncate(24 * time.Hour).In(location).UTC()
+	endOfDay := end.Add(24 * time.Hour).In(location).UTC()
+
+	if err := tP.db.WithContext(ctx).Table(timekeepingTable).
+		Where("user_id = ? and reference_date > ? and reference_date < ?", userID, begginningOfDay, endOfDay).
+		Order("reference_date ASC").
+		Find(&regs).Error; err != nil {
+		tP.log.Log(
+			"failed getting timekeeping",
+			err,
+		)
+		return nil, err
+	}
+
+	for _, reg := range regs {
+		out = append(out, reg.toModel())
+	}
+
+	return out, nil
 	//var (
 	//	err error
 	//

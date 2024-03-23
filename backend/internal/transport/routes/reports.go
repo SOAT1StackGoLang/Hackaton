@@ -72,6 +72,29 @@ func decodeGetReportByReference(_ context.Context, r *http.Request) (interface{}
 
 }
 
-func decodeGetReportRequestByRange(_ context.Context, _ *http.Request) (request interface{}, err error) {
-	return nil, nil
+func decodeGetReportRequestByRange(_ context.Context, r *http.Request) (interface{}, error) {
+	claims, err := getJWTTokenJSON(r)
+	if err != nil {
+		log.Println(err)
+	}
+	username, ok := claims["username"].(string)
+	if !ok {
+		username = r.Header.Get("user_id")
+		log.Println("Bad request: unable to find expected value. User ID from header:", username)
+	}
+
+	req := endpoints.TimekeepingReportRequest{
+		UserID: username,
+	}
+
+	req.Start, ok = mux.Vars(r)["start"]
+	if !ok {
+		return nil, ErrBadRouting
+	}
+	req.End, ok = mux.Vars(r)["end"]
+	if !ok {
+		return nil, ErrBadRouting
+	}
+
+	return req, nil
 }
