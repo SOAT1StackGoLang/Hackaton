@@ -228,3 +228,30 @@ spec:
 YAML
 }
 
+#---------------------------------------------------------------------------------------------------
+#  HPA
+#---------------------------------------------------------------------------------------------------
+
+resource "kubectl_manifest" "svc_hackaton_hpa" {
+  yaml_body = <<YAML
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: svc-hackaton-hpa
+  namespace: ${local.namespace}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: svc-hackaton
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 100
+
+YAML
+}
