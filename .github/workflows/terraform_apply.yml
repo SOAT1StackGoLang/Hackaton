@@ -20,10 +20,21 @@ on:
         description: 'Deployment Environment'
         required: true
         default: 'dev'
+        type: choice
+        options:
+          - dev
+          - dev-01
+          - main
       TF_STATE_BUCKET:
         description: 'Terraform State Bucket'
         required: false
         default: 's1sg-tc-terraform-state-bucket-hackaton'
+        type: choice
+        options:
+          - s1sg-tc-terraform-state-bucket-hackaton
+          - s1sg-tc-terraform-state-bucket-hackaton-dev
+          - s1sg-tc-terraform-state-bucket-hackaton-dev-01
+          - s1sg-tc-terraform-state-bucket-hackaton-main
       TF_STATE_KEY:
         description: 'Terraform State Key'
         required: false
@@ -32,7 +43,11 @@ on:
         description: 'The tag of the image for the hackaton service without svc'
         required: false
         default: 'develop'
-      
+        type: choice
+        options:
+          - develop
+          - ${{ github.base_ref }}
+          - main
 jobs:
   setup:
     runs-on: ubuntu-latest
