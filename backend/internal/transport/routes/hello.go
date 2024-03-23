@@ -2,13 +2,15 @@ package routes
 
 import (
 	"context"
+
 	"github.com/SOAT1StackGoLang/Hackaton/internal/endpoints"
 	kittransport "github.com/go-kit/kit/transport"
 	httptransport "github.com/go-kit/kit/transport/http"
 
+	"net/http"
+
 	kitlog "github.com/go-kit/log"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
 func NewHelloRoutes(r *mux.Router, logger kitlog.Logger) *mux.Router {

@@ -25,6 +25,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type errorer interface {
@@ -69,4 +71,25 @@ func codeFrom(err error) int {
 	default:
 		return http.StatusInternalServerError
 	}
+}
+
+// lets create a function that will get a jwt token from the request header Authorization
+func getJWTToken(r *http.Request) string {
+	return r.Header.Get("Authorization")
+}
+
+// lets create a function that will use GetJWTToken to get the token and return the json object from the jwt token
+func getJWTTokenJSON(r *http.Request) (map[string]interface{}, error) {
+	tokenString := getJWTToken(r)
+	parser := jwt.NewParser()
+	token, _, err := parser.ParseUnverified(tokenString, jwt.MapClaims{})
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		return claims, nil
+	}
+
+	return nil, errors.New("unable to parse token")
 }
