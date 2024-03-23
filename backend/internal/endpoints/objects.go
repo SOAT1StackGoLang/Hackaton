@@ -41,8 +41,8 @@ type (
 
 	TimekeepingReportRequest struct {
 		UserID string `json:"user_id"`
-		Start  string `json:"from"`
-		End    string `json:"to"`
+		Start  string `json:"start"`
+		End    string `json:"end"`
 	}
 
 	TimekeepingReportByReferenceRequest struct {
@@ -51,13 +51,12 @@ type (
 	}
 
 	TimekeepingReportResponse struct {
-		UserID        string                `json:"user_id"`
-		ReferenceDate string                `json:"reference_date"`
-		Start         string                `json:"from"`
-		End           string                `json:"to"`
-		Open          string                `json:"open"`
-		WorkedHours   string                `json:"worked_hours"`
-		Report        []TimekeepingResponse `json:"report"`
+		UserID      string                `json:"user_id"`
+		Start       string                `json:"from"`
+		End         string                `json:"to"`
+		Open        string                `json:"open"`
+		WorkedHours string                `json:"worked_hours"`
+		Report      []TimekeepingResponse `json:"report"`
 	}
 
 	//DailyReport struct {
@@ -68,13 +67,32 @@ type (
 	//}
 )
 
+func timeKeepingReportResponseFromModels(in *models.RangedTimekeepingReport) TimekeepingReportResponse {
+	location, _ := time.LoadLocation("America/Sao_Paulo") // Fuso horário de Brasília
+
+	out := TimekeepingReportResponse{
+		UserID:      in.UserID,
+		Start:       in.Start.In(location).Format("2006-01-02"),
+		End:         in.End.In(location).Format("2006-01-02"),
+		Open:        fmt.Sprintf("%t", in.Open),
+		WorkedHours: formatarDiferencaTempo(in.WorkedMinutes),
+	}
+
+	for _, p := range in.Details {
+		out.Report = append(out.Report, timeKeepingResponseFromModels(&p))
+	}
+
+	return out
+
+}
+
 func timeKeepingResponseFromModels(in *models.Timekeeping) TimekeepingResponse {
 	location, _ := time.LoadLocation("America/Sao_Paulo") // Fuso horário de Brasília
 
 	out := &TimekeepingResponse{
 		ID:            in.ID.String(),
 		UserID:        in.UserID,
-		ReferenceDate: in.CreatedAt.In(location).Format("2006-01-02"),
+		ReferenceDate: in.ReferenceDate.Format("2006-01-02"),
 		UpdatedAt:     in.UpdatedAt.In(location).Format(time.RFC3339),
 		WorkedTime:    formatarDiferencaTempo(in.WorkedMinutes),
 		Open:          in.Open,
