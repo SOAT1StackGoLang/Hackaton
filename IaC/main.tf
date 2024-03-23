@@ -36,9 +36,10 @@ module "eks_cluster" {
   eks_cluster_subnet_ids = flatten([module.vpc_for_eks.public_subnet_ids, module.vpc_for_eks.private_subnet_ids])
 
   # Node group configuration (including autoscaling configurations)
-  ami_type                = "AL2_x86_64"
+  ami_type                = "BOTTLEROCKET_ARM_64"
   disk_size               = 20
-  instance_types          = ["t2.small"]
+  ## instance type T4G family is ARM based
+  instance_types          = ["T4G Nano" ,"T4G Micro", "T4G Small"] 
   pvt_desired_size        = 1
   pvt_max_size            = 8
   pvt_min_size            = 1
