@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/persistence"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/transport"
@@ -9,7 +11,6 @@ import (
 	"github.com/gorilla/mux"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"net/http"
 
 	"log"
 )
@@ -27,6 +28,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r = routes.NewHelloRoutes(r, logger.InfoLogger)
+	r = routes.NewSwaggerRoutes(r, logger.InfoLogger)
 
 	entriesRepo := persistence.NewTimekeepingRepository(db, logger.InfoLogger)
 	entriesSvc := service.NewTimekeepingService(entriesRepo)

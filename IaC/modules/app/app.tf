@@ -12,8 +12,8 @@ terraform {
 locals {
   namespace = var.project_name
   
-  svc_hackaton_migs_image = "${var.image_registry}/hackaton:${var.svc_hackaton_migs_image_tag}"
-  svc_hackaton_image      = "${var.image_registry}/hackaton:${var.svc_hackaton_image_tag}"
+  svc_hackaton_migs_image = "${var.image_registry}/hackaton:migs-${var.svc_hackaton_image_tag}"
+  svc_hackaton_image      = "${var.image_registry}/hackaton:svc-${var.svc_hackaton_image_tag}"
 
   lb_service_name_hackaton     = "lb-hackaton-svc"
   lb_service_port_hackaton     = 8080

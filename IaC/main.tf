@@ -57,8 +57,9 @@ module "eks_cluster" {
 
 # Deploy K8 manisfests via kubectl
 module "app" {
-  source       = "./modules/app"
-  project_name = var.project_name
+  source                 = "./modules/app"
+  project_name           = var.project_name
+  svc_hackaton_image_tag = var.svc_hackaton_image_tag
 
   database_host     = module.rds.rds_endpoint
   database_username = var.database_credentials.username
@@ -74,16 +75,16 @@ module "app" {
 
 # Authorizer: Cognito + Lambda + API GW
 module "authorizer" {
-  source                     = "./modules/authorizer"
-  project_name               = var.project_name
-  region                     = var.region
-  lb_service_name_hackaton     = module.app.lb_service_name_hackaton
-  lb_service_port_hackaton     = module.app.lb_service_port_hackaton
-  vpc_id                     = module.vpc_for_eks.vpc_id
-  private_subnet_ids         = module.vpc_for_eks.private_subnet_ids
-  environment                = "dev"
-  cognito_user_name          = var.cognito_test_user.username
-  cognito_user_password      = var.cognito_test_user.password
+  source                   = "./modules/authorizer"
+  project_name             = var.project_name
+  region                   = var.region
+  lb_service_name_hackaton = module.app.lb_service_name_hackaton
+  lb_service_port_hackaton = module.app.lb_service_port_hackaton
+  vpc_id                   = module.vpc_for_eks.vpc_id
+  private_subnet_ids       = module.vpc_for_eks.private_subnet_ids
+  environment              = var.environment
+  cognito_user_name        = var.cognito_test_user.username
+  cognito_user_password    = var.cognito_test_user.password
 
   depends_on = [module.app]
 }
