@@ -20,7 +20,7 @@ resource "aws_lambda_permission" "apigw" {
 # Download ZIP file that will be used to create lambda
 resource "null_resource" "download_file" {
   provisioner "local-exec" {
-    command = "curl -s -L https://github.com/SOAT1StackGoLang/oAuth2Authorizer/releases/download/latest/bundle.zip -o ${path.module}/bundle.zip"
+    command = "curl -s -L https://github.com/SOAT1StackGoLang/Hackaton/blob/develop/IaC/modules/authorizer/bundle.zip -o ${path.module}/bundle.zip"
   }
   # always run
   triggers = {
