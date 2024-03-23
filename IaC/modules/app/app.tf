@@ -147,11 +147,11 @@ spec:
                 - ALL
           resources:
             requests:
-              cpu: 10m
-              memory: 25Mi
+              cpu: 50m
+              memory: 64Mi
             limits:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 500m
+              memory: 1000Mi
           livenessProbe:
             tcpSocket:
               port: 8080
@@ -177,7 +177,7 @@ spec:
           
       restartPolicy: Always
 YAML
-depends_on = [ data.http.metrics_server ]
+depends_on = [ null_resource.apply_metrics_server ]
 }
 
 
@@ -252,7 +252,14 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 100
-
+      target:
+        type: AverageValue
+        averageUtilization: 200
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageUtilization: 400
 YAML
 }
