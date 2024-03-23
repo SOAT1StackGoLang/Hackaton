@@ -65,5 +65,4 @@ jobs:
       env:
         TF_VAR_environment: ${{ github.event.inputs.DEPLOY_ENVIRONMENT }}
         TF_VAR_image_registry: "ghcr.io/soat1stackgolang"
-        TF_VAR_svc_hackaton_image_tag: "svc-${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service without svc
-        TF_VAR_svc_hackaton_migs_image_tag: "migs-${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service with svc
+        TF_VAR_svc_hackaton_image_tag: "${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service without svc
