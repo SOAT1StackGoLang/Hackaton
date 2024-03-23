@@ -1,6 +1,6 @@
-//	@title			Swagger Tech Challenge Order API
+//	@title			Swagger Hackaton API
 //	@version		1.0
-//	@description	API for managing orders
+//	@description	API for managing Hackaton
 //	@termsOfService	http://swagger.io/terms/
 
 //	@contact.name	API Support
