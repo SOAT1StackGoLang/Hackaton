@@ -2,26 +2,30 @@ package persistence
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/models"
+	logger "github.com/SOAT1StackGoLang/Hackaton/pkg/middleware"
 	"github.com/google/uuid"
 	"time"
 )
 
 type (
 	Timekeeping struct {
-		ID            uuid.UUID    `gorm:"id,primaryKey" json:"id"`
-		UserID        string       `json:"user_id"`
-		CreatedAt     time.Time    `json:"created_at"`
-		UpdatedAt     sql.NullTime `json:"updated_at"`
-		WorkedMinutes int64        `json:"worked_minutes"`
-		Open          bool         `json:"open"`
-		Details       []Period     `gorm:"type:jsonb" json:"details"`
+		ID            uuid.UUID       `gorm:"id,primaryKey" json:"id"`
+		UserID        string          `json:"user_id"`
+		CreatedAt     time.Time       `json:"created_at"`
+		ReferenceDate time.Time       `json:"reference_date"`
+		UpdatedAt     sql.NullTime    `json:"updated_at"`
+		WorkedMinutes int64           `json:"worked_minutes"`
+		Open          bool            `json:"open"`
+		Details       json.RawMessage `json:"periods" gorm:"type:jsonb"`
 	}
 
-	Period struct {
-		WorkedMinutes int64 `json:"worked_minutes"`
-		StartingEntry Entry `json:"starting_entry"`
-		EndingEntry   Entry `json:"ending_entry"`
+	Details struct {
+		WorkedMinutes int64  `json:"worked_minutes"`
+		StartingEntry *Entry `json:"starting_entry"`
+		EndingEntry   *Entry `json:"ending_entry,omitempty"`
 	}
 
 	Entry struct {
@@ -31,90 +35,99 @@ type (
 )
 
 func timekeepingFromModels(in *models.Timekeeping) *Timekeeping {
-	var details []Period
+	var details []Details
 	out := &Timekeeping{
 		ID:            in.ID,
 		UserID:        in.UserID,
 		CreatedAt:     in.CreatedAt,
 		WorkedMinutes: in.WorkedMinutes,
+		ReferenceDate: in.ReferenceDate,
 		Open:          in.Open,
 	}
 
 	if in.UpdatedAt.IsZero() {
-		out.UpdatedAt = sql.NullTime{}
+		out.UpdatedAt = sql.NullTime{Valid: false}
 	} else {
 		out.UpdatedAt = sql.NullTime{Time: in.UpdatedAt, Valid: true}
 	}
 
 	for _, detail := range in.Details {
-		details = append(details, periodFromModel(detail))
+		details = append(details, detailsFromModel(*detail))
 	}
 
-	out.Details = details
+	outB, err := json.Marshal(details)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed marshalling details: %v", err))
+	}
+	out.Details = outB
 
 	return out
 }
 
-func periodFromModel(in models.Period) Period {
-	out := Period{
+func detailsFromModel(in models.Details) Details {
+	out := Details{
 		WorkedMinutes: in.WorkedMinutes,
-		StartingEntry: Entry{
+		StartingEntry: &Entry{
 			ID:        in.StartingEntry.ID,
 			CreatedAt: in.StartingEntry.CreatedAt,
 		},
-		EndingEntry: Entry{
+	}
+	if in.EndingEntry != nil {
+		out.EndingEntry = &Entry{
 			ID:        in.EndingEntry.ID,
 			CreatedAt: in.EndingEntry.CreatedAt,
-		},
+		}
 	}
 
 	return out
 }
 
-func (p *Period) toModel() *models.Period {
-	out := models.Period{
+func (p *Details) toModel() *models.Details {
+	if p == nil {
+		return nil
+	}
+	out := models.Details{
 		WorkedMinutes: p.WorkedMinutes,
-		StartingEntry: models.Entry{
+		StartingEntry: &models.Entry{
 			ID:        p.StartingEntry.ID,
 			CreatedAt: p.StartingEntry.CreatedAt,
 		},
-		EndingEntry: models.Entry{
+	}
+	if p.EndingEntry != nil {
+		out.EndingEntry = &models.Entry{
 			ID:        p.EndingEntry.ID,
 			CreatedAt: p.EndingEntry.CreatedAt,
-		},
+		}
+
 	}
 
 	return &out
 }
 
 func (t *Timekeeping) toModel() *models.Timekeeping {
-	var details []models.Period
+	var details []Details
 	out := &models.Timekeeping{
-		ID:        t.ID,
-		UserID:    t.UserID,
-		CreatedAt: t.CreatedAt,
-		Open:      t.Open,
+		ID:            t.ID,
+		UserID:        t.UserID,
+		CreatedAt:     t.CreatedAt,
+		ReferenceDate: t.ReferenceDate,
+		WorkedMinutes: t.WorkedMinutes,
+		Open:          t.Open,
 	}
 
 	if t.UpdatedAt.Valid {
 		out.UpdatedAt = t.UpdatedAt.Time
 	}
 
-	for _, detail := range t.Details {
-		details = append(details, models.Period{
-			WorkedMinutes: detail.WorkedMinutes,
-			StartingEntry: models.Entry{
-				ID:        detail.StartingEntry.ID,
-				CreatedAt: detail.StartingEntry.CreatedAt,
-			},
-			EndingEntry: models.Entry{
-				ID:        detail.EndingEntry.ID,
-				CreatedAt: detail.EndingEntry.CreatedAt,
-			},
-		})
+	if err := json.Unmarshal(t.Details, &details); err != nil {
+		logger.Error(fmt.Sprintf("failed unmarshalling details: %v", err))
 	}
 
-	out.Details = details
+	pD := make([]*models.Details, 0)
+	for _, detail := range details {
+		pD = append(pD, detail.toModel())
+	}
+	out.Details = pD
 
 	return out
 }

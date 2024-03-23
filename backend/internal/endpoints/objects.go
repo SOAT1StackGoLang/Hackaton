@@ -25,13 +25,13 @@ type (
 		UpdatedAt     string   `json:"updated_at"`
 		WorkedTime    string   `json:"worked_time"`
 		Open          bool     `json:"open"`
-		Details       []Period `json:"details"`
+		Details       []Detail `json:"details"`
 	}
 
-	Period struct {
+	Detail struct {
 		WorkedTime    string `json:"worked_time"`
 		StartingEntry Entry  `json:"starting_entry"`
-		EndingEntry   Entry  `json:"ending_entry"`
+		EndingEntry   *Entry `json:"ending_entry,omitempty"`
 	}
 
 	Entry struct {
@@ -69,23 +69,26 @@ func timeKeepingResponseFromModels(in *models.Timekeeping) TimekeepingResponse {
 		ID:            in.ID.String(),
 		UserID:        in.UserID,
 		ReferenceDate: in.CreatedAt.In(location).Format("2006-01-02"),
-		UpdatedAt:     in.UpdatedAt.In(location).Format(time.RFC822),
-		WorkedTime:    formatarDiferencaTempo(in.WorkedMinutes),
-		Open:          in.Open,
+		//UpdatedAt:     in.UpdatedAt.In(location).Format(time.RFC3339),
+		WorkedTime: formatarDiferencaTempo(in.WorkedMinutes),
+		Open:       in.Open,
 	}
 
 	for _, p := range in.Details {
-		out.Details = append(out.Details, Period{
+		add := Detail{
 			WorkedTime: formatarDiferencaTempo(p.WorkedMinutes),
 			StartingEntry: Entry{
 				ID:        p.StartingEntry.ID.String(),
-				CreatedAt: p.StartingEntry.CreatedAt.Format("2006-01-02"),
+				CreatedAt: p.StartingEntry.CreatedAt.In(location).Format(time.RFC3339),
 			},
-			EndingEntry: Entry{
+		}
+		if p.EndingEntry != nil {
+			add.EndingEntry = &Entry{
 				ID:        p.EndingEntry.ID.String(),
-				CreatedAt: p.EndingEntry.CreatedAt.Format("2006-01-02"),
-			},
-		})
+				CreatedAt: p.EndingEntry.CreatedAt.In(location).Format(time.RFC3339),
+			}
+		}
+		out.Details = append(out.Details, add)
 	}
 
 	return out
@@ -100,9 +103,12 @@ func formatarDiferencaTempo(minutos int64) string {
 	stringFormatada := ""
 	if horas > 0 {
 		stringFormatada = fmt.Sprintf("%d hora(s)", horas)
+		if minutosRestantes > 0 {
+			stringFormatada += " e "
+		}
 	}
 	if minutosRestantes > 0 {
-		stringFormatada += fmt.Sprintf(" e %d minuto(s)", minutosRestantes)
+		stringFormatada += fmt.Sprintf("%d minuto(s)", minutosRestantes)
 	}
 
 	return stringFormatada

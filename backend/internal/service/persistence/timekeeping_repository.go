@@ -29,15 +29,17 @@ func (tP *tP) UpdateTimekeeping(ctx context.Context, in *models.Timekeeping) (*m
 
 func (tP *tP) GetTimekeepingByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error) {
 	var (
-		reg *Timekeeping
+		reg         Timekeeping
+		location, _ = time.LoadLocation("America/Sao_Paulo") // Fuso horário de Brasília
+
 	)
 
-	begginningOfDay := referenceDate.UTC().Truncate(24 * time.Hour)
-	endOfDay := begginningOfDay.Add(24 * time.Hour)
+	begginningOfDay := referenceDate.UTC().Truncate(24 * time.Hour).In(location)
+	endOfDay := begginningOfDay.Add(24 * time.Hour).In(location)
 
 	if err := tP.db.WithContext(ctx).Table(timekeepingTable).
 		Where("user_id = ? and created_at >= ? and created_at < ?", userID, begginningOfDay, endOfDay).
-		Find(reg).Error; err != nil {
+		First(&reg).Error; err != nil {
 		tP.log.Log(
 			"failed getting timekeeping",
 			err,
@@ -50,12 +52,15 @@ func (tP *tP) GetTimekeepingByReferenceDateAndUserID(ctx context.Context, userID
 
 func (tP *tP) CreateTimekeeping(ctx context.Context, in *models.Timekeeping) error {
 	var err error
-	if err := tP.db.WithContext(ctx).Table(timekeepingTable).Create(in); err != nil {
+	dbIN := timekeepingFromModels(in)
+	if err := tP.db.WithContext(ctx).Table(timekeepingTable).Create(dbIN).Error; err != nil {
 		tP.log.Log(
 			"failed creating timekeeping",
 			err,
 		)
 	}
+
+	in.ID = dbIN.ID
 
 	return err
 }

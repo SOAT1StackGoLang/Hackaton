@@ -31,16 +31,17 @@ type (
 		ID            uuid.UUID
 		UserID        string
 		CreatedAt     time.Time
+		ReferenceDate time.Time
 		UpdatedAt     time.Time
 		WorkedMinutes int64
 		Open          bool
-		Details       []Period
+		Details       []*Details
 	}
 
-	Period struct {
+	Details struct {
 		WorkedMinutes int64
-		StartingEntry Entry
-		EndingEntry   Entry
+		StartingEntry *Entry
+		EndingEntry   *Entry
 	}
 
 	Entry struct {

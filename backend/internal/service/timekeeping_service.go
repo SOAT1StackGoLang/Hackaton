@@ -7,6 +7,7 @@ import (
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/models"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/persistence"
 	logger "github.com/SOAT1StackGoLang/Hackaton/pkg/middleware"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
@@ -16,6 +17,8 @@ const referenceLayout = "2006-01-02"
 type tS struct {
 	tR persistence.TimekeepingRepository
 }
+
+var location, _ = time.LoadLocation("America/Sao_Paulo") // Fuso horário de Brasília
 
 func (t *tS) InsertEntry(ctx context.Context, userID string, instant time.Time) (*models.Timekeeping, error) {
 	var referenceDate time.Time
@@ -28,12 +31,15 @@ func (t *tS) InsertEntry(ctx context.Context, userID string, instant time.Time) 
 	tK, err := t.tR.GetTimekeepingByReferenceDateAndUserID(ctx, userID, referenceDate)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		tK = &models.Timekeeping{
-			UserID:    userID,
-			CreatedAt: referenceDate,
-			Open:      true,
-			Details: []models.Period{
+			ID:            uuid.New(),
+			UserID:        userID,
+			ReferenceDate: referenceDate.In(location),
+			CreatedAt:     referenceDate,
+			Open:          true,
+			Details: []*models.Details{
 				{
-					StartingEntry: models.Entry{
+					StartingEntry: &models.Entry{
+						ID:        uuid.New(),
 						CreatedAt: instant,
 					},
 				},
@@ -50,13 +56,19 @@ func (t *tS) InsertEntry(ctx context.Context, userID string, instant time.Time) 
 	}
 
 	if tK.Open {
-		t.processWorkedMinutes(tK, referenceDate)
+		currentDetail := tK.Details[len(tK.Details)-1]
+		currentDetail.WorkedMinutes = t.processWorkedMinutes(tK, referenceDate)
+		currentDetail.EndingEntry = &models.Entry{
+			ID:        uuid.New(),
+			CreatedAt: referenceDate,
+		}
 
 		tK.Open = false
 	} else {
-		tK.Details = append(tK.Details, models.Period{
+		tK.Details = append(tK.Details, &models.Details{
 			WorkedMinutes: 0,
-			StartingEntry: models.Entry{
+			StartingEntry: &models.Entry{
+				ID:        uuid.New(),
 				CreatedAt: referenceDate,
 			},
 		})
@@ -71,7 +83,7 @@ func (t *tS) InsertEntry(ctx context.Context, userID string, instant time.Time) 
 	return tK, nil
 }
 
-func (t *tS) processWorkedMinutes(tK *models.Timekeeping, referenceDate time.Time) {
+func (t *tS) processWorkedMinutes(tK *models.Timekeeping, referenceDate time.Time) int64 {
 	points := len(tK.Details)
 	currentDetail := tK.Details[points-1]
 
@@ -79,6 +91,7 @@ func (t *tS) processWorkedMinutes(tK *models.Timekeeping, referenceDate time.Tim
 	currentDetail.WorkedMinutes = minutesWorked
 
 	tK.WorkedMinutes += minutesWorked
+	return minutesWorked
 }
 
 func (t *tS) GetTimekeepingByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error) {
