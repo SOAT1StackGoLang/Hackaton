@@ -45,7 +45,10 @@ func main() {
 	tKRepo := persistence.NewTimekeepingRepository(db, logger.InfoLogger)
 	tKSvc := service.NewTimekeepingService(tKRepo)
 
-	r = routes.NewTimeeekpingRoutes(r, tKSvc, logger.InfoLogger)
+	r = routes.NewTimekeepingRoutes(r, tKSvc, logger.InfoLogger)
+
+	rS := service.NewReportService(tKRepo)
+	r = routes.NewReportRoutes(r, rS, logger.InfoLogger)
 
 	transport.NewHTTPServer(":8080", muxToHttp(r))
 

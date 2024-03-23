@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewTimeeekpingRoutes(r *mux.Router, svc service.TimekeepingService, logger kitlog.Logger) *mux.Router {
+func NewTimekeepingRoutes(r *mux.Router, svc service.TimekeepingService, logger kitlog.Logger) *mux.Router {
 	entries := endpoints.MakeTimekeepingEndpoint(svc)
 
 	options := []httptransport.ServerOption{
