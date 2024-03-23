@@ -81,7 +81,7 @@ module "authorizer" {
   lb_service_port_hackaton     = module.app.lb_service_port_hackaton
   vpc_id                     = module.vpc_for_eks.vpc_id
   private_subnet_ids         = module.vpc_for_eks.private_subnet_ids
-  environment                = "dev"
+  environment                = var.environment
   cognito_user_name          = var.cognito_test_user.username
   cognito_user_password      = var.cognito_test_user.password
 

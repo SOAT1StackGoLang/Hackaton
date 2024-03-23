@@ -59,3 +59,9 @@ variable "redeploy_annotation" {
   type        = string
   default = "none"
 }
+
+variable "environment" {
+  description = "Environment to deploy the stack"
+  type        = string
+  default     = "dev"
+}
