@@ -20,7 +20,7 @@ type (
 
 	TimekeepingResponse struct {
 		ID            string   `json:"id"`
-		UserID        string   `json:"user_id"`
+		UserID        string   `json:"user_id,omitempty"`
 		ReferenceDate string   `json:"created_at"`
 		UpdatedAt     string   `json:"updated_at"`
 		WorkedTime    string   `json:"worked_time"`
@@ -41,25 +41,26 @@ type (
 
 	TimekeepingReportRequest struct {
 		UserID string `json:"user_id"`
-		From   string `json:"from"`
-		To     string `json:"to"`
+		Start  string `json:"from"`
+		End    string `json:"to"`
 	}
 
 	TimekeepingReportResponse struct {
-		UserID      string        `json:"user_id"`
-		From        string        `json:"from"`
-		To          string        `json:"to"`
-		Status      string        `json:"status"`
-		WorkedHours string        `json:"worked_hours"`
-		Report      []DailyReport `json:"report"`
+		UserID        string                `json:"user_id"`
+		ReferenceDate string                `json:"reference_date"`
+		Start         string                `json:"from"`
+		End           string                `json:"to"`
+		Open          string                `json:"open"`
+		WorkedHours   string                `json:"worked_hours"`
+		Report        []TimekeepingResponse `json:"report"`
 	}
 
-	DailyReport struct {
-		Date        string  `json:"date"`
-		Open        bool    `json:"open"`
-		WorkedHours string  `json:"worked_hours"`
-		Entries     []Entry `json:"entries"`
-	}
+	//DailyReport struct {
+	//	Date        string   `json:"date"`
+	//	Open        bool     `json:"open"`
+	//	WorkedHours string   `json:"worked_hours"`
+	//	Details     []Detail `json:"details"`
+	//}
 )
 
 func timeKeepingResponseFromModels(in *models.Timekeeping) TimekeepingResponse {

@@ -94,16 +94,6 @@ func (t *tS) processWorkedMinutes(tK *models.Timekeeping, referenceDate time.Tim
 	return minutesWorked
 }
 
-func (t *tS) GetTimekeepingByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (t *tS) GetTimekeepingByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) (*models.RangedTimekeepingReport, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func NewTimekeepingService(persistence persistence.TimekeepingRepository) TimekeepingService {
 	return &tS{
 		tR: persistence,

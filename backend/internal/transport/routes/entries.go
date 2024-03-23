@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewEntriesRoutes(r *mux.Router, svc service.TimekeepingService, logger kitlog.Logger) *mux.Router {
+func NewTimekeepingRoutes(r *mux.Router, svc service.TimekeepingService, logger kitlog.Logger) *mux.Router {
 	entries := endpoints.MakeTimekeepingEndpoint(svc)
 
 	options := []httptransport.ServerOption{
@@ -61,11 +61,9 @@ func decodeInsertEntryRequest(_ context.Context, r *http.Request) (interface{}, 
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
-	if request.UserID == ""{
+	if request.UserID == "" {
 		request.UserID = username
 	}
-
-
 
 	return request, nil
 }

@@ -8,6 +8,9 @@ import (
 
 type TimekeepingService interface {
 	InsertEntry(ctx context.Context, userID string, instant time.Time) (*models.Timekeeping, error)
-	GetTimekeepingByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error)
-	GetTimekeepingByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) (*models.RangedTimekeepingReport, error)
+}
+
+type ReportService interface {
+	GetReportByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error)
+	GetReportByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) (*models.RangedTimekeepingReport, error)
 }
