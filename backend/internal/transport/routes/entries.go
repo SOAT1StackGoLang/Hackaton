@@ -61,8 +61,9 @@ func decodeInsertEntryRequest(_ context.Context, r *http.Request) (interface{}, 
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
-	if request.UserID == "" {
-		request.UserID = username
+
+	if request.UserID != "" {
+		return nil, http.ErrBodyNotAllowed
 	}
 
 	return request, nil
