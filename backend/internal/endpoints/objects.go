@@ -41,24 +41,24 @@ type (
 
 	TimekeepingReportRequest struct {
 		UserID string `json:"user_id"`
-		From   string `json:"from"`
-		To     string `json:"to"`
+		Start  string `json:"from"`
+		End    string `json:"to"`
 	}
 
 	TimekeepingReportResponse struct {
 		UserID      string        `json:"user_id"`
-		From        string        `json:"from"`
-		To          string        `json:"to"`
+		Start       string        `json:"from"`
+		End         string        `json:"to"`
 		Status      string        `json:"status"`
 		WorkedHours string        `json:"worked_hours"`
 		Report      []DailyReport `json:"report"`
 	}
 
 	DailyReport struct {
-		Date        string  `json:"date"`
-		Open        bool    `json:"open"`
-		WorkedHours string  `json:"worked_hours"`
-		Entries     []Entry `json:"entries"`
+		Date        string   `json:"date"`
+		Open        bool     `json:"open"`
+		WorkedHours string   `json:"worked_hours"`
+		Details     []Detail `json:"details"`
 	}
 )
 

@@ -40,13 +40,12 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r = routes.NewHelloRoutes(r, logger.InfoLogger)
 	r = routes.NewSwaggerRoutes(r, logger.InfoLogger)
 
-	entriesRepo := persistence.NewTimekeepingRepository(db, logger.InfoLogger)
-	entriesSvc := service.NewTimekeepingService(entriesRepo)
+	tKRepo := persistence.NewTimekeepingRepository(db, logger.InfoLogger)
+	tKSvc := service.NewTimekeepingService(tKRepo)
 
-	r = routes.NewEntriesRoutes(r, entriesSvc, logger.InfoLogger)
+	r = routes.NewTimeeekpingRoutes(r, tKSvc, logger.InfoLogger)
 
 	transport.NewHTTPServer(":8080", muxToHttp(r))
 
