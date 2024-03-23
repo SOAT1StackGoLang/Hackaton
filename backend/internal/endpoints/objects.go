@@ -45,6 +45,11 @@ type (
 		End    string `json:"to"`
 	}
 
+	TimekeepingReportByReferenceRequest struct {
+		UserID        string `json:"user_id"`
+		ReferenceDate string `json:"reference_date"`
+	}
+
 	TimekeepingReportResponse struct {
 		UserID        string                `json:"user_id"`
 		ReferenceDate string                `json:"reference_date"`
@@ -66,33 +71,37 @@ type (
 func timeKeepingResponseFromModels(in *models.Timekeeping) TimekeepingResponse {
 	location, _ := time.LoadLocation("America/Sao_Paulo") // Fuso horário de Brasília
 
-	out := TimekeepingResponse{
+	out := &TimekeepingResponse{
 		ID:            in.ID.String(),
 		UserID:        in.UserID,
 		ReferenceDate: in.CreatedAt.In(location).Format("2006-01-02"),
-		//UpdatedAt:     in.UpdatedAt.In(location).Format(time.RFC3339),
-		WorkedTime: formatarDiferencaTempo(in.WorkedMinutes),
-		Open:       in.Open,
+		UpdatedAt:     in.UpdatedAt.In(location).Format(time.RFC3339),
+		WorkedTime:    formatarDiferencaTempo(in.WorkedMinutes),
+		Open:          in.Open,
 	}
 
 	for _, p := range in.Details {
-		add := Detail{
-			WorkedTime: formatarDiferencaTempo(p.WorkedMinutes),
-			StartingEntry: Entry{
-				ID:        p.StartingEntry.ID.String(),
-				CreatedAt: p.StartingEntry.CreatedAt.In(location).Format(time.RFC3339),
-			},
-		}
-		if p.EndingEntry != nil {
-			add.EndingEntry = &Entry{
-				ID:        p.EndingEntry.ID.String(),
-				CreatedAt: p.EndingEntry.CreatedAt.In(location).Format(time.RFC3339),
-			}
-		}
-		out.Details = append(out.Details, add)
+		parseDetails(p, location, out)
 	}
 
-	return out
+	return *out
+}
+
+func parseDetails(p *models.Details, location *time.Location, out *TimekeepingResponse) {
+	add := Detail{
+		WorkedTime: formatarDiferencaTempo(p.WorkedMinutes),
+		StartingEntry: Entry{
+			ID:        p.StartingEntry.ID.String(),
+			CreatedAt: p.StartingEntry.CreatedAt.In(location).Format(time.RFC3339),
+		},
+	}
+	if p.EndingEntry != nil {
+		add.EndingEntry = &Entry{
+			ID:        p.EndingEntry.ID.String(),
+			CreatedAt: p.EndingEntry.CreatedAt.In(location).Format(time.RFC3339),
+		}
+	}
+	out.Details = append(out.Details, add)
 }
 
 func formatarDiferencaTempo(minutos int64) string {

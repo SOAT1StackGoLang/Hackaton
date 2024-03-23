@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"database/sql"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/models"
 	kitlog "github.com/go-kit/log"
 	"gorm.io/gorm"
@@ -17,6 +18,10 @@ type tP struct {
 
 func (tP *tP) UpdateTimekeeping(ctx context.Context, in *models.Timekeeping) (*models.Timekeeping, error) {
 	reg := timekeepingFromModels(in)
+	reg.UpdatedAt = sql.NullTime{
+		Time:  time.Now().UTC(),
+		Valid: true,
+	}
 	if err := tP.db.WithContext(ctx).Table(timekeepingTable).Save(reg).Error; err != nil {
 		tP.log.Log(
 			"failed updating timekeeping",
