@@ -6,6 +6,7 @@ resource "null_resource" "Verification" {
   # Run the local-exec provisioner after the null_resource is created
   provisioner "local-exec" {
     command = <<EOT
+      sleep 15
       token=$(aws cognito-idp admin-initiate-auth --user-pool-id ${module.authorizer.cognito_userpool_id} \
         --client-id ${module.authorizer.cognito_client_id} \
         --auth-flow ADMIN_NO_SRP_AUTH \
@@ -47,7 +48,7 @@ resource "null_resource" "Verification" {
       echo "Hackaton Swagger URL: ${module.authorizer.apigw_endpoint}/swagger/index.html" >> /tmp/verification.txt
   EOT
   }
-  depends_on = [module.authorizer]
+  depends_on = [module.authorizer, module.app, module.eks_cluster, module.rds]
 
   # always run the provisioner
   triggers = {

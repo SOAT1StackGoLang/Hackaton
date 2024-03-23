@@ -36,7 +36,7 @@ variable "database_credentials" {
     username = "databaseteste"
     password = "password"
     port     = 5432
-    name     = "lanchonete"
+    name     = "hackaton"
   }
 }
 
