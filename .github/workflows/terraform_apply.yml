@@ -93,7 +93,7 @@ jobs:
           export svc_hackaton_image_tag="${{ github.event.inputs.svc_hackaton_image_tag }}"
         fi
         if [ "${{ github.event.inputs.DEPLOY_ENVIRONMENT }}" == "branch" ]; then
-          export DEPLOY_ENVIRONMENT="${{ github.event.ref }}"
+          export DEPLOY_ENVIRONMENT="${BRANCH_NAME}"
         else
           export DEPLOY_ENVIRONMENT="${{ github.event.inputs.DEPLOY_ENVIRONMENT }}"
         fi
