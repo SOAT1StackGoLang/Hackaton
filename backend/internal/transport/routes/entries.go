@@ -14,17 +14,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewEntriesRoutes(r *mux.Router, svc service.EntriesService, logger kitlog.Logger) *mux.Router {
-	entries := endpoints.MakeEntriesEndpoint(svc)
+func NewEntriesRoutes(r *mux.Router, svc service.TimekeepingService, logger kitlog.Logger) *mux.Router {
+	entries := endpoints.MakeTimekeepingEndpoint(svc)
 
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorHandler(kittransport.NewLogErrorHandler(logger)),
 		httptransport.ServerErrorEncoder(encodeError),
 	}
 
-	r.Methods(http.MethodPost).Path("/entries").Handler(httptransport.NewServer(
-		entries.CreateEntryEndpoint,
-		decodeCreateEntryRequest,
+	r.Methods(http.MethodPost).Path("/api/clock-in").Handler(httptransport.NewServer(
+		entries.InsertTimekeepingEndpoint,
+		decodeInsertEntryRequest,
 		encodeResponse,
 		options...,
 	))
@@ -45,30 +45,27 @@ func NewEntriesRoutes(r *mux.Router, svc service.EntriesService, logger kitlog.L
 // @Success 200 {string} string "ok"
 // @Failure 400 {string} string "error"
 // @Failure 500 {string} string "error"
-// @Router /entries [post]
-func decodeCreateEntryRequest(_ context.Context, r *http.Request) (interface{}, error) {
+// @Router /api/clock-in [post]
+func decodeInsertEntryRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	claims, err := getJWTTokenJSON(r)
 	if err != nil {
 		log.Println(err)
 	}
-
 	username, ok := claims["username"].(string)
 	if !ok {
 		username = r.Header.Get("user_id")
 		log.Println("Bad request: unable to find expected value. User ID from header:", username)
 	}
 
-	var requestBody struct {
-		EntryAt string `json:"entry_at"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+	var request endpoints.InsertTimekeepingEntryRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
-
-	request := endpoints.InsertEntryRequest{
-		UserID:  username,
-		EntryAt: requestBody.EntryAt,
+	if request.UserID == ""{
+		request.UserID = username
 	}
+
+
 
 	return request, nil
 }

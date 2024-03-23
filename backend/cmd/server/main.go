@@ -30,8 +30,8 @@ func main() {
 	r = routes.NewHelloRoutes(r, logger.InfoLogger)
 	r = routes.NewSwaggerRoutes(r, logger.InfoLogger)
 
-	entriesRepo := persistence.NewEntriesPersistence(db, logger.InfoLogger)
-	entriesSvc := service.NewEntriesService(entriesRepo)
+	entriesRepo := persistence.NewTimekeepingRepository(db, logger.InfoLogger)
+	entriesSvc := service.NewTimekeepingService(entriesRepo)
 
 	r = routes.NewEntriesRoutes(r, entriesSvc, logger.InfoLogger)
 

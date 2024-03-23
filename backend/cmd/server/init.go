@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/joho/godotenv"
 
 	"github.com/SOAT1StackGoLang/Hackaton/pkg/helpers"
 	logger "github.com/SOAT1StackGoLang/Hackaton/pkg/middleware"
@@ -18,10 +19,10 @@ var (
 func initializeApp() {
 	flag.Parse()
 
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	logger.InfoLogger.Log("load err", err.Error())
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		logger.InfoLogger.Log("load err", err.Error())
+	}
 
 	helpers.ReadPgxConnEnvs()
 	connString = helpers.GetConnectionParams()

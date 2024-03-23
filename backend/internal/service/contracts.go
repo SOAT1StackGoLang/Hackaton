@@ -3,15 +3,11 @@ package service
 import (
 	"context"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/models"
-	"github.com/google/uuid"
 	"time"
 )
 
-type EntriesService interface {
-	CreateEntry(ctx context.Context, in *models.Entry) (*models.Entry, error)
-}
-
-type ReportsService interface {
-	GetDailyReportFromDate(ctx context.Context, userID uuid.UUID, date time.Time) (*models.DailyReport, error)
-	GetMonthlyFromDateReport(ctx context.Context, userID uuid.UUID, date time.Time) (*models.Report, error)
+type TimekeepingService interface {
+	InsertEntry(ctx context.Context, userID string, instant time.Time) (*models.Timekeeping, error)
+	GetTimekeepingByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error)
+	GetTimekeepingByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) (*models.RangedTimekeepingReport, error)
 }
