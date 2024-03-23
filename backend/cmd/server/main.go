@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service/persistence"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/transport"
@@ -11,6 +9,8 @@ import (
 	"github.com/gorilla/mux"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"net/http"
+	"time"
 
 	"log"
 )
@@ -23,6 +23,19 @@ func main() {
 	})
 	if err != nil {
 		log.Panicf("failed initializing db: %s\n", err)
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Panicf("failed getting db connection: %s\n", err)
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetConnMaxLifetime(time.Minute * 5)
+
+	if err := db.Apply(&gorm.Config{
+		ConnPool: sqlDB,
+	}); err != nil {
+		log.Panicf("failed applying db config: %s\n", err)
 	}
 
 	r := mux.NewRouter()
