@@ -36,6 +36,7 @@ on:
           - s1sg-tc-terraform-state-bucket-hackaton-dev
           - s1sg-tc-terraform-state-bucket-hackaton-dev-01
           - s1sg-tc-terraform-state-bucket-hackaton-main
+          - default-with-account-id
       TF_STATE_KEY:
         description: 'Terraform State Key'
         required: false
@@ -73,8 +74,10 @@ jobs:
     # if the DEPLOY_ENVIRONMENT is branch we should change to the real branch name
     - name: Set Environment Variables
       run: |
-        if [ "${{ github.event.inputs.TF_STATE_BUCKET }}" == "s1sg-tc-terraform-state-bucket-hackaton" ]; then
-          export TF_STATE_BUCKET="${{ github.event.inputs.TF_STATE_BUCKET }}-${{ secrets.AWS_ACCOUNT_ID }}"
+        if [ "${{ github.event.inputs.TF_STATE_BUCKET }}" == "default-with-account-id" ]; then
+          # get the AWS account ID
+          export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          export TF_STATE_BUCKET="s1sg-tc-terraform-state-bucket-hackaton-${AWS_ACCOUNT_ID}"
         else
           export TF_STATE_BUCKET="${{ github.event.inputs.TF_STATE_BUCKET }}"
         fi
