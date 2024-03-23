@@ -82,7 +82,7 @@ func (tP *tP) ListTimekeepingByRangeAndUserID(ctx context.Context, userID string
 	endOfDay := end.Add(24 * time.Hour).In(location).UTC()
 
 	if err := tP.db.WithContext(ctx).Table(timekeepingTable).
-		Where("user_id = ? and reference_date > ? and reference_date < ?", userID, begginningOfDay, endOfDay).
+		Where("user_id = ? and created_at >= ? and created_at < ?", userID, begginningOfDay, endOfDay).
 		Order("reference_date ASC").
 		Find(&regs).Error; err != nil {
 		tP.log.Log(
@@ -97,35 +97,6 @@ func (tP *tP) ListTimekeepingByRangeAndUserID(ctx context.Context, userID string
 	}
 
 	return out, nil
-	//var (
-	//	err error
-	//
-	//	entries     []*models.Entry
-	//	entriesDB   []*Entry
-	//	endClausule time.Time
-	//)
-	//
-	//endClausule = end.Add(24 * time.Hour).UTC()
-	//
-	//if err := tP.db.WithContext(ctx).
-	//	Table(timekeepingTable).
-	//	Where("user_id = ? and entry_at >= ? and entry_at < ?", userID, start, endClausule).
-	//	Find(&entriesDB).Error; err != nil {
-	//	tP.log.Log(
-	//		"failed listing products",
-	//		err,
-	//	)
-	//}
-	//
-	//for _, entry := range entriesDB {
-	//	entries = append(entries, &models.Entry{
-	//		ID:        entry.ID,
-	//		CreatedAt: entry.CreatedAt,
-	//	})
-	//}
-	//
-	//return entries, err
-	return nil, nil
 }
 
 func NewTimekeepingRepository(db *gorm.DB, log kitlog.Logger) TimekeepingRepository {

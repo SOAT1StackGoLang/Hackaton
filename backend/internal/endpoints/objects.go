@@ -21,7 +21,7 @@ type (
 	TimekeepingResponse struct {
 		ID            string   `json:"id"`
 		UserID        string   `json:"user_id,omitempty"`
-		ReferenceDate string   `json:"created_at"`
+		ReferenceDate string   `json:"reference_date"`
 		UpdatedAt     string   `json:"updated_at"`
 		WorkedTime    string   `json:"worked_time"`
 		Open          bool     `json:"open"`

@@ -66,5 +66,7 @@ func decodeInsertEntryRequest(_ context.Context, r *http.Request) (interface{}, 
 		return nil, http.ErrBodyNotAllowed
 	}
 
+	request.UserID = username
+
 	return request, nil
 }
