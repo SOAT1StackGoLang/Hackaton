@@ -28,7 +28,6 @@ resource "aws_lambda_permission" "apigw" {
 #  }
 #}
 
-
 # Create Lambda function
 resource "aws_lambda_function" "authorizer_lambda" {
   function_name = "${var.project_name}_oAuth2Authorizer"
