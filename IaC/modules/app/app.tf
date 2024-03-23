@@ -177,6 +177,7 @@ spec:
           
       restartPolicy: Always
 YAML
+depends_on = [ data.http.metrics_server ]
 }
 
 
