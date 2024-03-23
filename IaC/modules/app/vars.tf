@@ -37,13 +37,7 @@ variable "image_registry" {
 variable "svc_hackaton_image_tag" {
   description = "The tag of the image for the Hackaton service"
   type        = string
-  default = "svc-develop"
-}
-
-variable "svc_hackaton_migs_image_tag" {
-  description = "The tag of the image for the Hackaton service"
-  type        = string
-  default = "migs-develop"
+  default = "develop"
 }
 
 variable "redeploy_annotation" {
