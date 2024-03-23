@@ -82,7 +82,13 @@ jobs:
           export TF_STATE_BUCKET="${{ github.event.inputs.TF_STATE_BUCKET }}"
         fi
         if [ "${{ github.event.inputs.svc_hackaton_image_tag }}" == "branch" ]; then
-          export svc_hackaton_image_tag="${{ github.event.ref }}"
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME=$(echo "${{ github.head_ref }}" | sed -e 's/refs\/heads\///' | sed 's/[^a-zA-Z0-9]/_/g')
+            export svc_hackaton_image_tag="${BRANCH_NAME}"
+          else
+            BRANCH_NAME=$(echo "${{ github.ref }}" | sed -e 's/refs\/heads\///' | sed 's/[^a-zA-Z0-9]/_/g')
+            export svc_hackaton_image_tag="${BRANCH_NAME}"
+          fi
         else
           export svc_hackaton_image_tag="${{ github.event.inputs.svc_hackaton_image_tag }}"
         fi
@@ -107,6 +113,6 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: './IaC'
       env:
-        TF_VAR_environment: ${{ github.event.inputs.DEPLOY_ENVIRONMENT }}
+        TF_VAR_environment: "${{ env.DEPLOY_ENVIRONMENT }}"
         TF_VAR_image_registry: "ghcr.io/soat1stackgolang"
         TF_VAR_svc_hackaton_image_tag: "${{ env.svc_hackaton_image_tag }}"
