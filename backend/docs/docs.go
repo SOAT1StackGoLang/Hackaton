@@ -143,6 +143,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/reports/csv": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Decode JWT token and get report by range as CSV download",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "testing",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "\"2006-01-02\"",
+                        "default": "2024-03-01",
+                        "description": "Start Date",
+                        "name": "start",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "\"2006-01-02\"",
+                        "default": "2024-03-31",
+                        "description": "End Date",
+                        "name": "end",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Routing",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/reports/daily": {
             "get": {
                 "security": [

@@ -19,8 +19,9 @@ type (
 
 func MakeReportsEndpoint(svc service.ReportService) ReportsEndpoint {
 	return ReportsEndpoint{
-		GetReportByReferenceDate: makeGetReportByReferenceDateEndpoint(svc),
-		GetReportByRange:         makeGetReportByRangeEndpoint(svc),
+		GetReportByReferenceDate:     makeGetReportByReferenceDateEndpoint(svc),
+		GetReportByRange:             makeGetReportByRangeEndpoint(svc),
+		GetReportByRangeAndUserIDCSV: makeGetReportByReferenceDateAndUserIDCSVEndpoint(svc),
 	}
 }
 
