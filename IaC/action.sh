@@ -53,6 +53,6 @@ export TF_VAR_image_registry="ghcr.io/soat1stackgolang"
 #export TF_VAR_svc_hackaton_image_tag="${svc_hackaton_image_tag}"
 export TF_VAR_svc_hackaton_image_tag="develop"
 #terraform plan
-#terraform apply -auto-approve
+terraform apply -auto-approve
 #terraform refresh
-terraform destroy -auto-approve
+#terraform destroy -auto-approve

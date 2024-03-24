@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/entries": {
+        "/api/clock-in": {
             "post": {
                 "security": [
                     {
@@ -44,6 +44,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "testing",
                         "description": "User ID",
                         "name": "user_id",
                         "in": "header"
@@ -55,7 +56,7 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "{\"entry_at\": \"2022-01-01T00:00:00Z\"}"
+                            "example": "{\"entry_at\": \"2024-03-24T00:52:24Z\"}"
                         }
                     }
                 ],
@@ -74,6 +75,118 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reports": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Decode JWT token and get report by range",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "testing",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "\"2006-01-02\"",
+                        "default": "2024-03-01",
+                        "description": "Start Date",
+                        "name": "start",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "\"2006-01-02\"",
+                        "default": "2024-03-31",
+                        "description": "End Date",
+                        "name": "end",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Routing",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reports/daily": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Decode JWT token and get report by reference",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "testing",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "format": "\"2006-01-02\"",
+                        "default": "2024-03-24",
+                        "description": "Reference Date",
+                        "name": "reference",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Routing",
                         "schema": {
                             "type": "string"
                         }
