@@ -11,20 +11,20 @@ terraform {
 
 locals {
   namespace = var.project_name
-  
-  svc_hackaton_migs_image = "${var.image_registry}/hackaton:${var.svc_hackaton_migs_image_tag}"
-  svc_hackaton_image      = "${var.image_registry}/hackaton:${var.svc_hackaton_image_tag}"
 
-  lb_service_name_hackaton     = "lb-hackaton-svc"
-  lb_service_port_hackaton     = 8080
+  svc_hackaton_migs_image = "${var.image_registry}/hackaton:migs-${var.svc_hackaton_image_tag}"
+  svc_hackaton_image      = "${var.image_registry}/hackaton:svc-${var.svc_hackaton_image_tag}"
 
-  svc_hackaton_port     = 8080
+  lb_service_name_hackaton = "lb-hackaton-svc"
+  lb_service_port_hackaton = 8080
 
-  svc_hackaton_svc     = "svc-hackaton-svc"
+  svc_hackaton_port = 8080
 
-  svc_hackaton_uri     = "http://${local.svc_hackaton_svc}.${local.namespace}.svc.cluster.local:${local.svc_hackaton_port}"
+  svc_hackaton_svc = "svc-hackaton-svc"
 
-  kvstore_db_svc_hackaton     = 10
+  svc_hackaton_uri = "http://${local.svc_hackaton_svc}.${local.namespace}.svc.cluster.local:${local.svc_hackaton_port}"
+
+  kvstore_db_svc_hackaton = 10
 
   postgres_host     = var.database_host
   postgres_port     = var.database_port
@@ -147,11 +147,11 @@ spec:
                 - ALL
           resources:
             requests:
-              cpu: 10m
-              memory: 25Mi
-            limits:
               cpu: 100m
-              memory: 100Mi
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
           livenessProbe:
             tcpSocket:
               port: 8080
@@ -228,3 +228,37 @@ spec:
 YAML
 }
 
+#---------------------------------------------------------------------------------------------------
+#  HPA
+#---------------------------------------------------------------------------------------------------
+
+resource "kubectl_manifest" "svc_hackaton_hpa" {
+  yaml_body = <<YAML
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: svc-hackaton-hpa
+  namespace: ${local.namespace}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: svc-hackaton
+  minReplicas: 1
+  maxReplicas: 50
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: AverageValue
+        averageUtilization: 200
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageUtilization: 200
+YAML
+}

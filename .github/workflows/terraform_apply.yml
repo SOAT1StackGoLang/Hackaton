@@ -20,10 +20,23 @@ on:
         description: 'Deployment Environment'
         required: true
         default: 'dev'
+        type: choice
+        options:
+          - branch
+          - dev
+          - dev-01
+          - main
       TF_STATE_BUCKET:
         description: 'Terraform State Bucket'
         required: false
         default: 's1sg-tc-terraform-state-bucket-hackaton'
+        type: choice
+        options:
+          - s1sg-tc-terraform-state-bucket-hackaton
+          - s1sg-tc-terraform-state-bucket-hackaton-dev
+          - s1sg-tc-terraform-state-bucket-hackaton-dev-01
+          - s1sg-tc-terraform-state-bucket-hackaton-main
+          - default-with-account-id
       TF_STATE_KEY:
         description: 'Terraform State Key'
         required: false
@@ -32,7 +45,11 @@ on:
         description: 'The tag of the image for the hackaton service without svc'
         required: false
         default: 'develop'
-      
+        type: choice
+        options:
+          - branch
+          - develop
+          - main
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -50,9 +67,42 @@ jobs:
         aws-secret-access-key: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY || secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ github.event.inputs.AWS_SESSION_TOKEN || secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ github.event.inputs.AWS_DEFAULT_REGION }}
+    
+    # Lets configure the environment variables, if the TF_STATE_BUCKET is s1sg-tc-terraform-state-bucket-hackaton we should append the AWS accoount ID in the end
+    # s1sg-tc-terraform-state-bucket-hackaton-<AWS_ACCOUNT_ID>
+    # if the svc_hackaton_image_tag is branch we should change to the real branch name
+    # if the DEPLOY_ENVIRONMENT is branch we should change to the real branch name
+    - name: Set Environment Variables
+      run: |
+        if [ "${{ github.event.inputs.TF_STATE_BUCKET }}" == "default-with-account-id" ]; then
+          # get the AWS account ID
+          export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          export TF_STATE_BUCKET="s1sg-tc-terraform-state-bucket-${AWS_ACCOUNT_ID}"
+        else
+          export TF_STATE_BUCKET="${{ github.event.inputs.TF_STATE_BUCKET }}"
+        fi
+        if [ "${{ github.event.inputs.svc_hackaton_image_tag }}" == "branch" ]; then
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME=$(echo "${{ github.head_ref }}" | awk -F"/" '{print $NF}' | sed 's/[^a-zA-Z0-9]/_/g')
+            export svc_hackaton_image_tag="${BRANCH_NAME}"
+          else
+            BRANCH_NAME=$(echo "${{ github.ref }}" | awk -F"/" '{print $NF}' | sed 's/[^a-zA-Z0-9]/_/g')
+            export svc_hackaton_image_tag="${BRANCH_NAME}"
+          fi
+        else
+          export svc_hackaton_image_tag="${{ github.event.inputs.svc_hackaton_image_tag }}"
+        fi
+        if [ "${{ github.event.inputs.DEPLOY_ENVIRONMENT }}" == "branch" ]; then
+          export DEPLOY_ENVIRONMENT="${BRANCH_NAME}"
+        else
+          export DEPLOY_ENVIRONMENT="${{ github.event.inputs.DEPLOY_ENVIRONMENT }}"
+        fi
+        echo "TF_STATE_BUCKET=${TF_STATE_BUCKET}" >> $GITHUB_ENV
+        echo "svc_hackaton_image_tag=${svc_hackaton_image_tag}" >> $GITHUB_ENV
+        echo "DEPLOY_ENVIRONMENT=${DEPLOY_ENVIRONMENT}" >> $GITHUB_ENV
 
     - name: Terraform Init
-      run: terraform init -upgrade -backend-config="bucket=${{ github.event.inputs.TF_STATE_BUCKET }}" -backend-config="key=${{ github.event.inputs.TF_STATE_KEY }}" -backend-config="region=${{ github.event.inputs.AWS_DEFAULT_REGION }}"
+      run: terraform init -upgrade -backend-config="bucket=${{ env.TF_STATE_BUCKET }}" -backend-config="key=${{ github.event.inputs.TF_STATE_KEY }}" -backend-config="region=${{ github.event.inputs.AWS_DEFAULT_REGION }}"
       working-directory: './IaC'
 
     - name: Set redeploy annotation
@@ -63,7 +113,6 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: './IaC'
       env:
-        TF_VAR_environment: ${{ github.event.inputs.DEPLOY_ENVIRONMENT }}
+        TF_VAR_environment: "${{ env.DEPLOY_ENVIRONMENT }}"
         TF_VAR_image_registry: "ghcr.io/soat1stackgolang"
-        TF_VAR_svc_hackaton_image_tag: "svc-${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service without svc
-        TF_VAR_svc_hackaton_migs_image_tag: "migs-${{ github.event.inputs.svc_hackaton_image_tag }}" # The tag of the image for the hackaton service with svc
+        TF_VAR_svc_hackaton_image_tag: "${{ env.svc_hackaton_image_tag }}"

@@ -36,7 +36,7 @@ variable "database_credentials" {
     username = "databaseteste"
     password = "password"
     port     = 5432
-    name     = "lanchonete"
+    name     = "hackaton"
   }
 }
 
@@ -57,5 +57,17 @@ variable "cognito_test_user" {
 variable "redeploy_annotation" {
   description = "Annotation to trigger a redeploy"
   type        = string
-  default = "none"
+  default     = "none"
+}
+
+variable "environment" {
+  description = "Environment to deploy the stack"
+  type        = string
+  default     = "dev"
+}
+
+variable "svc_hackaton_image_tag" {
+  description = "Tag for the image to be used in the deployment"
+  type        = string
+  default     = "develop"
 }

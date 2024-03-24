@@ -80,6 +80,9 @@ resource "aws_apigatewayv2_integration" "api_integration_hackaton" {
   connection_type        = "VPC_LINK"
   connection_id          = aws_apigatewayv2_vpc_link.api_vpc_link.id
   payload_format_version = "1.0"
+  request_parameters = {
+    "overwrite:header.userid" : "$context.authorizer.username"
+  }
   depends_on = [aws_apigatewayv2_vpc_link.api_vpc_link,
     aws_apigatewayv2_api.api
   ]

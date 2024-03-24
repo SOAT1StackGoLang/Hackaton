@@ -36,14 +36,15 @@ module "eks_cluster" {
   eks_cluster_subnet_ids = flatten([module.vpc_for_eks.public_subnet_ids, module.vpc_for_eks.private_subnet_ids])
 
   # Node group configuration (including autoscaling configurations)
-  ami_type                = "AL2_x86_64"
-  disk_size               = 20
-  instance_types          = ["t2.small"]
-  pvt_desired_size        = 1
+  ami_type  = "BOTTLEROCKET_ARM_64"
+  disk_size = 20
+  ## instance type T4G family is ARM based
+  instance_types          = ["t4g.small"]
+  pvt_desired_size        = 3
   pvt_max_size            = 8
   pvt_min_size            = 1
   pblc_desired_size       = 1
-  pblc_max_size           = 2
+  pblc_max_size           = 3
   pblc_min_size           = 1
   endpoint_private_access = true
   endpoint_public_access  = true
@@ -57,8 +58,9 @@ module "eks_cluster" {
 
 # Deploy K8 manisfests via kubectl
 module "app" {
-  source       = "./modules/app"
-  project_name = var.project_name
+  source                 = "./modules/app"
+  project_name           = var.project_name
+  svc_hackaton_image_tag = var.svc_hackaton_image_tag
 
   database_host     = module.rds.rds_endpoint
   database_username = var.database_credentials.username
@@ -74,16 +76,16 @@ module "app" {
 
 # Authorizer: Cognito + Lambda + API GW
 module "authorizer" {
-  source                     = "./modules/authorizer"
-  project_name               = var.project_name
-  region                     = var.region
-  lb_service_name_hackaton     = module.app.lb_service_name_hackaton
-  lb_service_port_hackaton     = module.app.lb_service_port_hackaton
-  vpc_id                     = module.vpc_for_eks.vpc_id
-  private_subnet_ids         = module.vpc_for_eks.private_subnet_ids
-  environment                = "dev"
-  cognito_user_name          = var.cognito_test_user.username
-  cognito_user_password      = var.cognito_test_user.password
+  source                   = "./modules/authorizer"
+  project_name             = var.project_name
+  region                   = var.region
+  lb_service_name_hackaton = module.app.lb_service_name_hackaton
+  lb_service_port_hackaton = module.app.lb_service_port_hackaton
+  vpc_id                   = module.vpc_for_eks.vpc_id
+  private_subnet_ids       = module.vpc_for_eks.private_subnet_ids
+  environment              = var.environment
+  cognito_user_name        = var.cognito_test_user.username
+  cognito_user_password    = var.cognito_test_user.password
 
   depends_on = [module.app]
 }

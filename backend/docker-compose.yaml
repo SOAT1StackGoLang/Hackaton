@@ -1,0 +1,46 @@
+## how to run
+# podman-compose build
+# docker-compose build
+# podman-compose up -d db
+# docker-compose up -d db
+version: '3'
+
+services:
+
+  # Service for managing
+  hackaton:
+    build: ./
+    ports:
+      - 8080:8080
+    environment:
+      # Database connection URI # check the initidb folder for more db information
+      DB_URI: postgres://postgres:postgres@backend_db_1:5432/hackaton?sslmode=disable
+    # Specifies the services that this service depends on.
+    depends_on:
+      - db
+
+    # Specifies the network that this service should be connected to.
+    networks:
+      - hackaton-network
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./initdb/:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+    networks:
+      - hackaton-network
+
+volumes:
+  postgres_data:
+
+networks:
+  hackaton-network:
+    driver: bridge
+  

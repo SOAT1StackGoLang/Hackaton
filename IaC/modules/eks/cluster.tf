@@ -16,4 +16,3 @@ resource "aws_eks_cluster" "main" {
     subnet_ids              = var.eks_cluster_subnet_ids
   }
 }
-

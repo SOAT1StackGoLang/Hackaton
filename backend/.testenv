@@ -1,0 +1,10 @@
+ENDPOINT=https://ttqe3moh10.execute-api.us-east-1.amazonaws.com
+AWS_REGION=us-east-1
+CLIENT_ID=4hojr2kivbpeuis0so7f4liqih
+USER_POOL_ID=us-east-1_eagKRqRru
+USERNAME=11122233300
+PASSWORD=F@ap1234
+NUM_THREADS=10
+NUM_REQUESTS=100
+NUM_GET_REQUESTS=70
+NUM_POST_REQUESTS=30
