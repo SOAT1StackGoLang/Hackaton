@@ -24,10 +24,6 @@ resource "aws_db_parameter_group" "postgres15_parameter_group" {
     name  = "rds.force_ssl"
     value = "1"
   }
-  parameter {
-    name  = "max_connections"
-    value = "1000"
-  }
 }
 
 # Create KMS KEY to encrypt RDS
