@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/Boostport/migration v1.1.2
 	github.com/Boostport/migration/driver/postgres v1.1.3
+	github.com/aws/aws-sdk-go v1.40.45
 	github.com/go-kit/kit v0.13.0
 	github.com/go-kit/log v0.2.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
@@ -30,6 +31,7 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
