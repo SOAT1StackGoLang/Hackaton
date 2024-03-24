@@ -13,6 +13,11 @@ type rS struct {
 	tR persistence.TimekeepingRepository
 }
 
+func (r rS) GetReportCSVByRangeAndUserID(ctx context.Context, userID string, start, end time.Time) ([]byte, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (r rS) GetReportByReferenceDateAndUserID(ctx context.Context, userID string, referenceDate time.Time) (*models.Timekeeping, error) {
 	out, err := r.tR.GetTimekeepingByReferenceDateAndUserID(ctx, userID, referenceDate)
 	if err != nil {

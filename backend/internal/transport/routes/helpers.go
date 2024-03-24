@@ -52,6 +52,21 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	return json.NewEncoder(w).Encode(response)
 }
 
+func encodeCSVBytesReponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	respBytes, ok := response.([]byte)
+	if !ok {
+		return errors.New("response is not a byte slice")
+	}
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment; filename=report.csv")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	_, err := w.Write(respBytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	if err == nil {
 		panic("encodeError with nil error")
