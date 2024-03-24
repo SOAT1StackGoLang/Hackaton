@@ -12,6 +12,16 @@ Hackaton Pos Tech
 ## Files and Directories
 
 - `backend`: This directory contains the Golang code for the backend of our application.
-- `lambdas`: This directory contains the code for our AWS Lambda functions.
-- `terraform`: This directory contains our Infrastructure as Code (IaC) using Terraform.
+  - `README.md`: This file contains the documentation for the backend.
+- `IaC`: This directory contains our Infrastructure as Code (IaC) using Terraform.
+  - `README.md`: This file contains the documentation for the IaC.
 - `docs`: This directory contains the documentation for our project.
+- `.github\workflows`: This directory contains the GitHub Actions workflows for our project.
+
+## Extra information
+
+This project is heavily inspired by the [SOAT1 Stack GoLang Tech Challange Fase 5](https://github.com/SOAT1StackGoLang/tech-challenge)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
