@@ -31,17 +31,17 @@ variable "database_name" {
 variable "image_registry" {
   description = "The registry where the image is stored"
   type        = string
-  default = "ghcr.io/soat1stackgolang"
+  default     = "ghcr.io/soat1stackgolang"
 }
 
 variable "svc_hackaton_image_tag" {
   description = "The tag of the image for the Hackaton service"
   type        = string
-  default = "svc-develop"
+  default     = "svc-develop"
 }
 
 variable "redeploy_annotation" {
   description = "Annotation to trigger a redeploy"
   type        = string
-  default = "none"
+  default     = "none"
 }

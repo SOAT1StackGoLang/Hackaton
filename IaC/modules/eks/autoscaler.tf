@@ -12,7 +12,7 @@ terraform {
 
 ## use existing role LabRole
 resource "kubectl_manifest" "cluster_autoscaler_service_account" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -22,7 +22,7 @@ YAML
 }
 
 resource "kubectl_manifest" "cluster_autoscaler_cluster_role" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -73,7 +73,7 @@ YAML
 }
 
 resource "kubectl_manifest" "cluster_autoscaler_role" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -92,7 +92,7 @@ YAML
 
 
 resource "kubectl_manifest" "cluster_autoscaler_cluster_role_binding" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -110,7 +110,7 @@ YAML
 
 
 resource "kubectl_manifest" "cluster_autoscaler_role_binding" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -128,7 +128,7 @@ YAML
 }
 
 resource "kubectl_manifest" "cluster_autoscaler_deployment" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: apps/v1
 kind: Deployment
 metadata:
