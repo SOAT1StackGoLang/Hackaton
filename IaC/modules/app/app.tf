@@ -147,8 +147,8 @@ spec:
                 - ALL
           resources:
             requests:
-              cpu: 50m
-              memory: 64Mi
+              cpu: 100m
+              memory: 128Mi
             limits:
               cpu: 500m
               memory: 1000Mi
@@ -246,7 +246,7 @@ spec:
     kind: Deployment
     name: svc-hackaton
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 50
   metrics:
   - type: Resource
     resource:
@@ -259,6 +259,6 @@ spec:
       name: memory
       target:
         type: AverageValue
-        averageUtilization: 400
+        averageUtilization: 200
 YAML
 }
