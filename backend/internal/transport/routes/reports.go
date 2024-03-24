@@ -141,7 +141,7 @@ func decodeGetReportRequestByRange(_ context.Context, r *http.Request) (interfac
 // @Tags Reports
 // @Security ApiKeyAuth
 // @Accept  json
-// @Produce  bytes
+// @Produce  plain
 // @Param   user_id     header   string     true  "User ID" default(testing)
 // @Param   start       query    string     true  "Start Date" Format("2006-01-02") default(2024-03-01)
 // @Param   end         query    string     true  "End Date" Format("2006-01-02") default(2024-03-31)
