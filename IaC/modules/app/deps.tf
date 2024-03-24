@@ -1,4 +1,4 @@
-resource "kubectl_manifest" "metrics_server" {
+resource "kubectl_manifest" "metric_server_service_account" {
   yaml_body = <<YAML
 apiVersion: v1
 kind: ServiceAccount
@@ -7,7 +7,11 @@ metadata:
     k8s-app: metrics-server
   name: metrics-server
   namespace: kube-system
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_cluster_role" {
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -27,7 +31,11 @@ rules:
   - get
   - list
   - watch
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_cluster_role_2" {
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -50,7 +58,11 @@ rules:
   - get
   - list
   - watch
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_role_binding" {
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -66,7 +78,11 @@ subjects:
 - kind: ServiceAccount
   name: metrics-server
   namespace: kube-system
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_cluster_role_binding" {
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -81,7 +97,11 @@ subjects:
 - kind: ServiceAccount
   name: metrics-server
   namespace: kube-system
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_cluster_role_binding_2" {
+  yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -96,7 +116,11 @@ subjects:
 - kind: ServiceAccount
   name: metrics-server
   namespace: kube-system
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_service" {
+  yaml_body = <<YAML
 apiVersion: v1
 kind: Service
 metadata:
@@ -112,7 +136,11 @@ spec:
     targetPort: https
   selector:
     k8s-app: metrics-server
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_deployment" {
+  yaml_body = <<YAML
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -185,7 +213,11 @@ spec:
       volumes:
       - emptyDir: {}
         name: tmp-dir
----
+YAML
+}
+
+resource "kubectl_manifest" "metric_server_api_service" {
+  yaml_body = <<YAML
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
@@ -201,6 +233,5 @@ spec:
     namespace: kube-system
   version: v1beta1
   versionPriority: 100
-
 YAML
 }
