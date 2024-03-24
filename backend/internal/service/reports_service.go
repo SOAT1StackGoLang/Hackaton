@@ -203,7 +203,7 @@ func writeDetailsCSV(writer *csv.Writer, detail *models.Details) error {
 		return err
 	}
 	if detail.EndingEntry != nil {
-		err = writer.Write([]string{"Entrada final", detail.EndingEntry.CreatedAt.In(location).Format(time.RFC)})
+		err = writer.Write([]string{"Entrada final", detail.EndingEntry.CreatedAt.In(location).Format(time.RFC822)})
 		if err != nil {
 			logger.Error(fmt.Sprintf("%s: %s", "failed writing row", err.Error()))
 		}
