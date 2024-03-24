@@ -147,11 +147,11 @@ spec:
                 - ALL
           resources:
             requests:
-              cpu: 10m
-              memory: 25Mi
+              cpu: 50m
+              memory: 64Mi
             limits:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 500m
+              memory: 1000Mi
           livenessProbe:
             tcpSocket:
               port: 8080
@@ -228,3 +228,37 @@ spec:
 YAML
 }
 
+#---------------------------------------------------------------------------------------------------
+#  HPA
+#---------------------------------------------------------------------------------------------------
+
+resource "kubectl_manifest" "svc_hackaton_hpa" {
+  yaml_body = <<YAML
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: svc-hackaton-hpa
+  namespace: ${local.namespace}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: svc-hackaton
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: AverageValue
+        averageUtilization: 200
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageUtilization: 400
+YAML
+}

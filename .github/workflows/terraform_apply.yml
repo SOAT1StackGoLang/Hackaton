@@ -83,17 +83,17 @@ jobs:
         fi
         if [ "${{ github.event.inputs.svc_hackaton_image_tag }}" == "branch" ]; then
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            BRANCH_NAME=$(echo "${{ github.head_ref }}" | sed -e 's/refs\/heads\///' | sed 's/[^a-zA-Z0-9]/_/g')
+            BRANCH_NAME=$(echo "${{ github.head_ref }}" | awk -F"/" '{print $NF}' | sed 's/[^a-zA-Z0-9]/_/g')
             export svc_hackaton_image_tag="${BRANCH_NAME}"
           else
-            BRANCH_NAME=$(echo "${{ github.ref }}" | sed -e 's/refs\/heads\///' | sed 's/[^a-zA-Z0-9]/_/g')
+            BRANCH_NAME=$(echo "${{ github.ref }}" | awk -F"/" '{print $NF}' | sed 's/[^a-zA-Z0-9]/_/g')
             export svc_hackaton_image_tag="${BRANCH_NAME}"
           fi
         else
           export svc_hackaton_image_tag="${{ github.event.inputs.svc_hackaton_image_tag }}"
         fi
         if [ "${{ github.event.inputs.DEPLOY_ENVIRONMENT }}" == "branch" ]; then
-          export DEPLOY_ENVIRONMENT="${{ github.event.ref }}"
+          export DEPLOY_ENVIRONMENT="${BRANCH_NAME}"
         else
           export DEPLOY_ENVIRONMENT="${{ github.event.inputs.DEPLOY_ENVIRONMENT }}"
         fi

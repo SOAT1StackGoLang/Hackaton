@@ -2,14 +2,15 @@ package routes
 
 import (
 	"context"
+	"log"
+	"net/http"
+
 	"github.com/SOAT1StackGoLang/Hackaton/internal/endpoints"
 	"github.com/SOAT1StackGoLang/Hackaton/internal/service"
 	kittransport "github.com/go-kit/kit/transport"
 	httptransport "github.com/go-kit/kit/transport/http"
 	kitlog "github.com/go-kit/log"
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
 )
 
 func NewReportRoutes(r *mux.Router, svc service.ReportService, logger kitlog.Logger) *mux.Router {
@@ -52,6 +53,17 @@ func NewReportRoutes(r *mux.Router, svc service.ReportService, logger kitlog.Log
 	return r
 }
 
+// decodeGetReportByReference godoc
+// @Summary Decode JWT token and get report by reference
+// @Tags Reports
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Param   user_id     header   string     false  "User ID" default(testing)
+// @Param   reference   query    string     true  "Reference Date" Format("2006-01-02") default(2024-03-24)
+// @Success 200 {string} string "ok"
+// @Failure 400 {string} string "Bad Routing"
+// @Router /api/reports/daily [get]
 func decodeGetReportByReference(_ context.Context, r *http.Request) (interface{}, error) {
 	claims, err := getJWTTokenJSON(r)
 	if err != nil {
@@ -75,6 +87,18 @@ func decodeGetReportByReference(_ context.Context, r *http.Request) (interface{}
 
 }
 
+// decodeGetReportRequestByRange godoc
+// @Summary Decode JWT token and get report by range
+// @Tags Reports
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Param   user_id     header   string     true  "User ID" default(testing)
+// @Param   start       query    string     true  "Start Date" Format("2006-01-02") default(2024-03-01)
+// @Param   end         query    string     true  "End Date" Format("2006-01-02") default(2024-03-31)
+// @Success 200 {string} string "ok"
+// @Failure 400 {string} string "Bad Routing"
+// @Router /api/reports [get]
 func decodeGetReportRequestByRange(_ context.Context, r *http.Request) (interface{}, error) {
 	claims, err := getJWTTokenJSON(r)
 	if err != nil {
