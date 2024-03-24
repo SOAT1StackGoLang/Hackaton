@@ -136,6 +136,18 @@ func decodeGetReportRequestByRange(_ context.Context, r *http.Request) (interfac
 	return req, nil
 }
 
+// decodeGetReportCSVByRangeAndUserID godoc
+// @Summary Decode JWT token and get report by range as CSV download
+// @Tags Reports
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  bytes
+// @Param   user_id     header   string     true  "User ID" default(testing)
+// @Param   start       query    string     true  "Start Date" Format("2006-01-02") default(2024-03-01)
+// @Param   end         query    string     true  "End Date" Format("2006-01-02") default(2024-03-31)
+// @Success 200
+// @Failure 400 {string} string "Bad Routing"
+// @Router /api/reports/csv [get]
 func decodeGetReportCSVByRangeAndUserID(_ context.Context, r *http.Request) (interface{}, error) {
 	claims, err := getJWTTokenJSON(r)
 	if err != nil {

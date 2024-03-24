@@ -19,7 +19,22 @@ type (
 	}
 
 	ReportCSV struct {
-		UserID string
+		UserID, Start, End, WorkedMinutes, Open string
+		Details                                 []Timekeeping
+	}
+
+	TimekeepingCSV struct {
+		ID, UserID, CreatedAt, ReferenceDate, UpdatedAt, WorkedMinutes, Open string
+		Details                                                              []*DetailsCSV
+	}
+
+	DetailsCSV struct {
+		WorkedMinutes              string
+		StartingEntry, EndingEntry *Entry
+	}
+
+	EntryCSV struct {
+		ID, CreatedAt string
 	}
 
 	RangedTimekeepingReport struct {
