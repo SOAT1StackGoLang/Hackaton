@@ -68,8 +68,8 @@ func writeReportCSV(outBuffer *bytes.Buffer, tkrStruct *models.RangedTimekeeping
 
 	row := []string{
 		tkrStruct.UserID,
-		tkrStruct.Start.In(location).String(),
-		tkrStruct.End.In(location).String(),
+		tkrStruct.Start.In(location).Format(time.RFC822),
+		tkrStruct.End.In(location).Format(time.RFC822),
 		formatarDiferencaTempo(tkrStruct.WorkedMinutes),
 		parseOpen(tkrStruct.Open),
 	}
@@ -154,9 +154,9 @@ func writeTimekeepingCSV(writer *csv.Writer, t *models.Timekeeping) error {
 
 	row := []string{
 		t.ID.String(),
-		t.CreatedAt.In(location).String(),
+		t.CreatedAt.In(location).Format(time.RFC822),
 		t.ReferenceDate.Format("2006-01-02"),
-		t.UpdatedAt.In(location).String(),
+		t.UpdatedAt.In(location).Format(time.RFC822),
 		formatarDiferencaTempo(t.WorkedMinutes),
 		parseOpen(t.Open),
 	}
@@ -197,13 +197,13 @@ func writeDetailsCSV(writer *csv.Writer, detail *models.Details) error {
 		return err
 	}
 
-	err = writer.Write([]string{"Entrada inicial", detail.StartingEntry.CreatedAt.In(location).String()})
+	err = writer.Write([]string{"Entrada inicial", detail.StartingEntry.CreatedAt.In(location).Format(time.RFC822)})
 	if err != nil {
 		logger.Error(fmt.Sprintf("%s: %s", "failed writing row", err.Error()))
 		return err
 	}
 	if detail.EndingEntry != nil {
-		err = writer.Write([]string{"Entrada final", detail.EndingEntry.CreatedAt.In(location).String()})
+		err = writer.Write([]string{"Entrada final", detail.EndingEntry.CreatedAt.In(location).Format(time.RFC)})
 		if err != nil {
 			logger.Error(fmt.Sprintf("%s: %s", "failed writing row", err.Error()))
 		}
