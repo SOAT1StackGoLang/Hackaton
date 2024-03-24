@@ -50,6 +50,14 @@ type (
 		ReferenceDate string `json:"reference_date"`
 	}
 
+	TimekeepingCSVReportRequest struct {
+		UserID string `json:"user_id"`
+		Start  string `json:"start"`
+		End    string `json:"end"`
+	}
+
+	TimekeepingCSVReportResponse []byte
+
 	TimekeepingReportResponse struct {
 		UserID      string                `json:"user_id"`
 		Start       string                `json:"from"`
