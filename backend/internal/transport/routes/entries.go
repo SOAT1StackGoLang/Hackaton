@@ -40,8 +40,8 @@ func NewTimekeepingRoutes(r *mux.Router, svc service.TimekeepingService, logger 
 // @Security	ApiKeyAuth
 // @Accept  json
 // @Produce  json
-// @Param   user_id   header    string   false    "User ID"
-// @Param   entry_at  body    string   true    "Entry At"  SchemaExample({"entry_at": "2022-01-01T00:00:00Z"})
+// @Param   user_id   header    string   false    "User ID" default(testing)
+// @Param   entry_at  body    string   true    "Entry At"  SchemaExample({"entry_at": "2024-03-24T00:52:24Z"})
 // @Success 200 {string} string "ok"
 // @Failure 400 {string} string "error"
 // @Failure 500 {string} string "error"

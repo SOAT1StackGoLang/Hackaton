@@ -47,9 +47,12 @@ terraform init -upgrade -backend-config="bucket=${TF_STATE_BUCKET}" -backend-con
 export TF_VAR_redeploy_annotation=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
 # Apply the Terraform configuration
-export TF_VAR_environment="${DEPLOY_ENVIRONMENT}"
+#export TF_VAR_environment="${DEPLOY_ENVIRONMENT}"
+export TF_VAR_environment="develop"
 export TF_VAR_image_registry="ghcr.io/soat1stackgolang"
 #export TF_VAR_svc_hackaton_image_tag="${svc_hackaton_image_tag}"
 export TF_VAR_svc_hackaton_image_tag="develop"
 #terraform plan
 terraform apply -auto-approve
+#terraform refresh
+#terraform destroy -auto-approve

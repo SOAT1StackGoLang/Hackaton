@@ -4,11 +4,10 @@
 #  Antes de executar esse script, atualize os dados abaixo com as informações fornecidas pelo
 #  terraform apply
 ############################################################################################
-apigw_endpoint="https://kv2ze9k579.execute-api.us-east-1.amazonaws.com"
-cognito_client_id="3gbr0s7qd4iaff6tivvk2kda7m"
-cognito_url="https://hackaton-dev.auth.us-east-1.amazoncognito.com"
-cognito_userpool_id="us-east-1_x7s3ZPD1w"
-
+apigw_endpoint="https://vojw32v7qi.execute-api.us-east-1.amazonaws.com"
+cognito_client_id="d4r488t5cjrbakg6ufhrao9q2"
+cognito_url="https://hackaton-develop.auth.us-east-1.amazoncognito.com"
+cognito_userpool_id="us-east-1_JWec5PIVd"
 
 cognito_username="11122233300"
 cognito_password="F@ap1234"

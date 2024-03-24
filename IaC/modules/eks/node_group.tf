@@ -8,6 +8,7 @@ resource "aws_eks_node_group" "main" {
   ami_type       = var.ami_type
   disk_size      = var.disk_size
   instance_types = var.instance_types
+  capacity_type = "SPOT"
 
   scaling_config {
     desired_size = var.pvt_desired_size

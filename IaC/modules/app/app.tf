@@ -177,7 +177,6 @@ spec:
           
       restartPolicy: Always
 YAML
-depends_on = [ null_resource.apply_metrics_server ]
 }
 
 
