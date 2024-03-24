@@ -39,13 +39,13 @@ module "eks_cluster" {
   ami_type                = "BOTTLEROCKET_ARM_64"
   disk_size               = 20
   ## instance type T4G family is ARM based
-  instance_types          = ["T4G Nano" ,"T4G Micro", "T4G Small"] 
-  pvt_desired_size        = 1
+  instance_types          = ["t4g.small"]
+  pvt_desired_size        = 3
   pvt_max_size            = 8
-  pvt_min_size            = 1
+  pvt_min_size            = 3
   pblc_desired_size       = 1
-  pblc_max_size           = 2
-  pblc_min_size           = 1
+  pblc_max_size           = 3
+  pblc_min_size           = 3
   endpoint_private_access = true
   endpoint_public_access  = true
   node_group_name         = "${var.project_name}-node-group"
