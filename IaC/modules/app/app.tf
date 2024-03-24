@@ -11,20 +11,20 @@ terraform {
 
 locals {
   namespace = var.project_name
-  
+
   svc_hackaton_migs_image = "${var.image_registry}/hackaton:migs-${var.svc_hackaton_image_tag}"
   svc_hackaton_image      = "${var.image_registry}/hackaton:svc-${var.svc_hackaton_image_tag}"
 
-  lb_service_name_hackaton     = "lb-hackaton-svc"
-  lb_service_port_hackaton     = 8080
+  lb_service_name_hackaton = "lb-hackaton-svc"
+  lb_service_port_hackaton = 8080
 
-  svc_hackaton_port     = 8080
+  svc_hackaton_port = 8080
 
-  svc_hackaton_svc     = "svc-hackaton-svc"
+  svc_hackaton_svc = "svc-hackaton-svc"
 
-  svc_hackaton_uri     = "http://${local.svc_hackaton_svc}.${local.namespace}.svc.cluster.local:${local.svc_hackaton_port}"
+  svc_hackaton_uri = "http://${local.svc_hackaton_svc}.${local.namespace}.svc.cluster.local:${local.svc_hackaton_port}"
 
-  kvstore_db_svc_hackaton     = 10
+  kvstore_db_svc_hackaton = 10
 
   postgres_host     = var.database_host
   postgres_port     = var.database_port
@@ -147,8 +147,8 @@ spec:
                 - ALL
           resources:
             requests:
-              cpu: 50m
-              memory: 64Mi
+              cpu: 100m
+              memory: 128Mi
             limits:
               cpu: 500m
               memory: 1000Mi
@@ -246,7 +246,7 @@ spec:
     kind: Deployment
     name: svc-hackaton
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 50
   metrics:
   - type: Resource
     resource:
@@ -259,6 +259,6 @@ spec:
       name: memory
       target:
         type: AverageValue
-        averageUtilization: 400
+        averageUtilization: 200
 YAML
 }
