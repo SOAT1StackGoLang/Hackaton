@@ -42,10 +42,10 @@ module "eks_cluster" {
   instance_types          = ["t4g.small"]
   pvt_desired_size        = 3
   pvt_max_size            = 8
-  pvt_min_size            = 3
+  pvt_min_size            = 1
   pblc_desired_size       = 1
   pblc_max_size           = 3
-  pblc_min_size           = 3
+  pblc_min_size           = 1
   endpoint_private_access = true
   endpoint_public_access  = true
   node_group_name         = "${var.project_name}-node-group"
