@@ -18,6 +18,10 @@ type (
 		DetailedEntries []Entry
 	}
 
+	ReportCSV struct {
+		UserID string
+	}
+
 	RangedTimekeepingReport struct {
 		UserID        string
 		Start         time.Time

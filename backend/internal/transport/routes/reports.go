@@ -46,6 +46,9 @@ func NewReportRoutes(r *mux.Router, svc service.ReportService, logger kitlog.Log
 				),
 		)
 
+	r.Methods(http.MethodGet).
+		Path("/api/reports/csv")
+
 	return r
 }
 
