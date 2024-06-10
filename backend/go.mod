@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/Boostport/migration v1.1.2
 	github.com/Boostport/migration/driver/postgres v1.1.3
-	github.com/aws/aws-sdk-go v1.40.45
+	github.com/aws/aws-sdk-go v1.53.20
 	github.com/go-kit/kit v0.13.0
 	github.com/go-kit/log v0.2.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
